@@ -2,25 +2,26 @@
 namespace src\Infrastructure\Repositories;
 
 use src\Domain\Models\PosProd;
+use src\Domain\ValuesObject\ID;
 
 interface GiacenzaRepository {
 
-    public function find(string $codProd, string $codArmadio, string $codScaffale): ?PosProd;
+    public function find(ID $codProd, ID $codArmadio, ID $codScaffale): ?PosProd;
 
     /** @return PosProd[] */
-    public function findByProdotto(string $codProd): array;
+    public function findByProdotto(ID $codProd): array;
 
     /** @return PosProd[] */
-    public function findByPosizione(string $codArmadio, string $codScaffale): array;
+    public function findByPosizione(ID $codArmadio, ID $codScaffale): array;
 
     /** @return PosProd[] */
     public function findAll(): array;
 
-    public function giacenzaTotale(string $codProd): int;
+    public function giacenzaTotale(ID $codProd): int;
 
     public function save(PosProd $posProd): void;
 
-    public function delete(string $codProd, string $codArmadio, string $codScaffale): void;
+    public function delete(ID $codProd, ID $codArmadio, ID $codScaffale): void;
 
     /**
      * @return array<int, array{codProd: string, qtaRiordino: int, qtaTotale: int}>

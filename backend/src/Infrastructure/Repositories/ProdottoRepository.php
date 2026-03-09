@@ -3,25 +3,26 @@ namespace src\Infrastructure\Repositories;
 
 use src\Domain\Models\Prodotto;
 use src\Domain\Models\AttrProd;
+use src\Domain\ValuesObject\ID;
 
 interface ProdottoRepository {
 
-    public function findByCod(string $codProd): ?Prodotto;
+    public function findByCod(ID $codProd): ?Prodotto;
 
     /** @return Prodotto[] */
     public function findAll(): array;
 
     /** @return Prodotto[] */
-    public function findByCategoria(string $codCat): array;
+    public function findByCategoria(ID $codCat): array;
 
     public function save(Prodotto $prodotto): void;
 
-    public function delete(string $codProd): void;
+    public function delete(ID $codProd): void;
 
     /** @return AttrProd[] */
-    public function getAttributi(string $codProd): array;
+    public function getAttributi(ID $codProd): array;
 
     public function saveAttributo(AttrProd $attrProd): void;
 
-    public function deleteAttributo(string $codProd, string $codAttr): void;
+    public function deleteAttributo(ID $codProd, ID $codAttr): void;
 }

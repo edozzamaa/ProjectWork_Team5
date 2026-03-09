@@ -2,15 +2,16 @@
 namespace src\Infrastructure\Repositories;
 
 use src\Domain\Models\Attributo;
+use src\Domain\ValuesObject\ID;
 
 interface AttributoRepository {
 
-    public function findByCod(string $codAttr): ?Attributo;
+    public function findByCod(ID $codAttr): ?Attributo;
 
     /** @return Attributo[] */
     public function findAll(): array;
 
     public function save(Attributo $attributo): void;
 
-    public function delete(string $codAttr): void;
+    public function delete(ID $codAttr): void;
 }
