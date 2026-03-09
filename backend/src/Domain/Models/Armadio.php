@@ -1,31 +1,31 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-
+use src\Domain\ValuesObjects\ID;
 /**
  * Class Armadio
  *
  * @package src\Domain\Models
- * @property string $codArmadio
+ * @property ID $codArmadio
  * @property ?string $descrizione
  */
 class Armadio {
-    private string $codArmadio;
+    private ID $codArmadio;
     private ?string $descrizione;
 
-    public function __construct(string $codArmadio, ?string $descrizione = null) {
+    public function __construct(ID $codArmadio, ?string $descrizione = null) {
         $this->codArmadio = $codArmadio;
         $this->descrizione = $descrizione;
     }
 
-    public static function reconstituteFromDatabase(string $codArmadio, ?string $descrizione): self {
+    public static function reconstituteFromDatabase(ID $codArmadio, ?string $descrizione): self {
         return new self($codArmadio, $descrizione);
     }
 
-    public function getCodArmadio(): string {
+    public function getCodArmadio(): ID {
         return $this->codArmadio;
     }
 
-    public function setCodArmadio(string $codArmadio): void {
+    public function setCodArmadio(ID $codArmadio): void {
         $this->codArmadio = $codArmadio;
     }
 

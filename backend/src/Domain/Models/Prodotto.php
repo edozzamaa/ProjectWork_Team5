@@ -1,24 +1,24 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-
+use src\Domain\ValuesObjects\ID;
 /**
  * Class Prodotto
  *
  * @package src\Domain\Models
- * @property string $codProd
+ * @property ID $codProd
  * @property int $qtaRiordino
- * @property ?string $codCat
- * @property ?string $codReg
- * @property ?string $codOE
+ * @property ?ID $codCat
+ * @property ?ID $codReg
+ * @property ?ID $codOE
  */
 class Prodotto {
-    private string $codProd;
+    private ID $codProd;
     private int $qtaRiordino;
-    private ?string $codCat;
-    private ?string $codReg;
-    private ?string $codOE;
+    private ?ID $codCat;
+    private ?ID $codReg;
+    private ?ID $codOE;
 
-    public function __construct(string $codProd, int $qtaRiordino = 0, ?string $codCat = null, ?string $codReg = null, ?string $codOE = null) {
+    public function __construct(ID $codProd, int $qtaRiordino = 0, ?ID $codCat = null, ?ID $codReg = null, ?ID $codOE = null) {
         $this->codProd = $codProd;
         $this->qtaRiordino = $qtaRiordino;
         $this->codCat = $codCat;
@@ -26,15 +26,15 @@ class Prodotto {
         $this->codOE = $codOE;
     }
 
-    public static function reconstituteFromDatabase(string $codProd, int $qtaRiordino, ?string $codCat, ?string $codReg, ?string $codOE): self {
+    public static function reconstituteFromDatabase(ID $codProd, int $qtaRiordino, ?ID $codCat, ?ID $codReg, ?ID $codOE): self {
         return new self($codProd, $qtaRiordino, $codCat, $codReg, $codOE);
     }
 
-    public function getCodProd(): string {
+    public function getCodProd(): ID {
         return $this->codProd;
     }
 
-    public function setCodProd(string $codProd): void {
+    public function setCodProd(ID $codProd): void {
         $this->codProd = $codProd;
     }
 
@@ -46,27 +46,27 @@ class Prodotto {
         $this->qtaRiordino = $qtaRiordino;
     }
 
-    public function getCodCat(): ?string {
+    public function getCodCat(): ?ID {
         return $this->codCat;
     }
 
-    public function setCodCat(?string $codCat): void {
+    public function setCodCat(?ID $codCat): void {
         $this->codCat = $codCat;
     }
 
-    public function getCodReg(): ?string {
+    public function getCodReg(): ?ID {
         return $this->codReg;
     }
 
-    public function setCodReg(?string $codReg): void {
+    public function setCodReg(?ID $codReg): void {
         $this->codReg = $codReg;
     }
 
-    public function getCodOE(): ?string {
+    public function getCodOE(): ?ID {
         return $this->codOE;
     }
 
-    public function setCodOE(?string $codOE): void {
+    public function setCodOE(?ID $codOE): void {
         $this->codOE = $codOE;
     }
 

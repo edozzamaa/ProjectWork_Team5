@@ -1,24 +1,26 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
 
+use src\Domain\ValuesObjects\Email;
+use src\Domain\ValuesObjects\ID;
 /**
  * Class Fornitore
  *
  * @package src\Domain\Models
- * @property string $ragSoc
+ * @property ID $ragSoc
  * @property ?string $partIVA
  * @property ?string $telefono
  * @property ?string $indirizzo
- * @property ?string $email
+ * @property ?Email $email
  */
 class Fornitore {
-    private string $ragSoc;
+    private ID $ragSoc;
     private ?string $partIVA;
     private ?string $telefono;
     private ?string $indirizzo;
-    private ?string $email;
+    private ?Email $email;
 
-    public function __construct(string $ragSoc, ?string $partIVA = null, ?string $telefono = null, ?string $indirizzo = null, ?string $email = null) {
+    public function __construct(ID $ragSoc, ?string $partIVA = null, ?string $telefono = null, ?string $indirizzo = null, ?Email $email = null) {
         $this->ragSoc = $ragSoc;
         $this->partIVA = $partIVA;
         $this->telefono = $telefono;
@@ -26,15 +28,15 @@ class Fornitore {
         $this->email = $email;
     }
 
-    public static function reconstituteFromDatabase(string $ragSoc, ?string $partIVA, ?string $telefono, ?string $indirizzo, ?string $email): self {
+    public static function reconstituteFromDatabase(ID $ragSoc, ?string $partIVA, ?string $telefono, ?string $indirizzo, ?Email $email): self {
         return new self($ragSoc, $partIVA, $telefono, $indirizzo, $email);
     }
 
-    public function getRagSoc(): string {
+    public function getRagSoc(): ID {
         return $this->ragSoc;
     }
 
-    public function setRagSoc(string $ragSoc): void {
+    public function setRagSoc(ID $ragSoc): void {
         $this->ragSoc = $ragSoc;
     }
 
@@ -62,11 +64,11 @@ class Fornitore {
         $this->indirizzo = $indirizzo;
     }
 
-    public function getEmail(): ?string {
+    public function getEmail(): ?Email {
         return $this->email;
     }
 
-    public function setEmail(?string $email): void {
+    public function setEmail(?Email $email): void {
         $this->email = $email;
     }
 }

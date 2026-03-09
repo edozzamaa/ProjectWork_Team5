@@ -1,31 +1,31 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-
+use src\Domain\ValuesObjects\ID;
 /**
  * Class Categoria
  *
  * @package src\Domain\Models
- * @property string $codCat
+ * @property ID $codCat
  * @property string $tipo
  */
 class Categoria {
-    private string $codCat;
+    private ID $codCat;
     private string $tipo;
 
-    public function __construct(string $codCat, string $tipo) {
+    public function __construct(ID $codCat, string $tipo) {
         $this->codCat = $codCat;
         $this->tipo = $tipo;
     }
 
-    public static function reconstituteFromDatabase(string $codCat, string $tipo): self {
+    public static function reconstituteFromDatabase(ID $codCat, string $tipo): self {
         return new self($codCat, $tipo);
     }
 
-    public function getCodCat(): string {
+    public function getCodCat(): ID {
         return $this->codCat;
     }
 
-    public function setCodCat(string $codCat): void {
+    public function setCodCat(ID $codCat): void {
         $this->codCat = $codCat;
     }
 

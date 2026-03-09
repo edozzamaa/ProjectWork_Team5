@@ -1,42 +1,42 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-
+use src\Domain\ValuesObjects\ID;
 /**
  * Class Posizione
  *
  * @package src\Domain\Models
- * @property string $codArmadio
- * @property string $codScaffale
+ * @property ID $codArmadio
+ * @property ID $codScaffale
  * @property ?string $descrizione
  */
 class Posizione {
-    private string $codArmadio;
-    private string $codScaffale;
+    private ID $codArmadio;
+    private ID $codScaffale;
     private ?string $descrizione;
 
-    public function __construct(string $codArmadio, string $codScaffale, ?string $descrizione = null) {
+    public function __construct(ID $codArmadio, ID $codScaffale, ?string $descrizione = null) {
         $this->codArmadio = $codArmadio;
         $this->codScaffale = $codScaffale;
         $this->descrizione = $descrizione;
     }
 
-    public static function reconstituteFromDatabase(string $codArmadio, string $codScaffale, ?string $descrizione): self {
+    public static function reconstituteFromDatabase(ID $codArmadio, ID $codScaffale, ?string $descrizione): self {
         return new self($codArmadio, $codScaffale, $descrizione);
     }
 
-    public function getCodArmadio(): string {
+    public function getCodArmadio(): ID {
         return $this->codArmadio;
     }
 
-    public function setCodArmadio(string $codArmadio): void {
+    public function setCodArmadio(ID $codArmadio): void {
         $this->codArmadio = $codArmadio;
     }
 
-    public function getCodScaffale(): string {
+    public function getCodScaffale(): ID {
         return $this->codScaffale;
     }
 
-    public function setCodScaffale(string $codScaffale): void {
+    public function setCodScaffale(ID $codScaffale): void {
         $this->codScaffale = $codScaffale;
     }
 

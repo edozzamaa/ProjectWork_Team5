@@ -1,31 +1,31 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-
+use src\Domain\ValuesObjects\ID;
 /**
  * Class CodificaReg
  *
  * @package src\Domain\Models
- * @property string $codReg
+ * @property ID $codReg
  * @property string $descrizione
  */
 class CodificaReg {
-    private string $codReg;
+    private ID $codReg;
     private string $descrizione;
 
-    public function __construct(string $codReg, string $descrizione) {
+    public function __construct(ID $codReg, string $descrizione) {
         $this->codReg = $codReg;
         $this->descrizione = $descrizione;
     }
 
-    public static function reconstituteFromDatabase(string $codReg, string $descrizione): self {
+    public static function reconstituteFromDatabase(ID $codReg, string $descrizione): self {
         return new self($codReg, $descrizione);
     }
 
-    public function getCodReg(): string {
+    public function getCodReg(): ID {
         return $this->codReg;
     }
 
-    public function setCodReg(string $codReg): void {
+    public function setCodReg(ID $codReg): void {
         $this->codReg = $codReg;
     }
 

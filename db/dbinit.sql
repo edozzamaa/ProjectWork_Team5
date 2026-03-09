@@ -86,11 +86,7 @@ CREATE TABLE POS_PROD(
     FOREIGN KEY (codArmadio, codScaffale) REFERENCES POSIZIONE(codArmadio, codScaffale)
 );
 
--- ============================================================
--- VISTA: v_stock_alert
--- Mostra i prodotti la cui giacenza totale è scesa sotto la
--- soglia minima di riordino (qtaRiordino). 
--- ============================================================
+
 CREATE OR REPLACE VIEW v_stock_alert AS
 SELECT
     p.codProd,
@@ -105,10 +101,7 @@ LEFT JOIN CODIFICA_REG cr ON cr.codReg = p.codReg
 GROUP BY p.codProd, cr.descrizione, cat.tipo, p.qtaRiordino
 HAVING COALESCE(SUM(pp.qta), 0) < p.qtaRiordino;
 
--- ============================================================
--- VISTA: v_stock_overview
--- Panoramica completa delle giacenze con posizione dettagliata
--- ============================================================
+
 CREATE OR REPLACE VIEW v_stock_overview AS
 SELECT
     p.codProd,

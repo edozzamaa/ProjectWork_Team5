@@ -1,53 +1,53 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-
+use src\Domain\ValuesObjects\ID;
 /**
  * Class PosProd
  *
  * @package src\Domain\Models
- * @property string $codProd
- * @property string $codArmadio
- * @property string $codScaffale
+ * @property ID $codProd
+ * @property ID $codArmadio
+ * @property ID $codScaffale
  * @property int $qta
  */
 class PosProd {
-    private string $codProd;
-    private string $codArmadio;
-    private string $codScaffale;
+    private ID $codProd;
+    private ID $codArmadio;
+    private ID $codScaffale;
     private int $qta;
 
-    public function __construct(string $codProd, string $codArmadio, string $codScaffale, int $qta = 0) {
+    public function __construct(ID $codProd, ID $codArmadio, ID $codScaffale, int $qta = 0) {
         $this->codProd = $codProd;
         $this->codArmadio = $codArmadio;
         $this->codScaffale = $codScaffale;
         $this->qta = $qta;
     }
 
-    public static function reconstituteFromDatabase(string $codProd, string $codArmadio, string $codScaffale, int $qta): self {
+    public static function reconstituteFromDatabase(ID $codProd, ID $codArmadio, ID $codScaffale, int $qta): self {
         return new self($codProd, $codArmadio, $codScaffale, $qta);
     }
 
-    public function getCodProd(): string {
+    public function getCodProd(): ID {
         return $this->codProd;
     }
 
-    public function setCodProd(string $codProd): void {
+    public function setCodProd(ID $codProd): void {
         $this->codProd = $codProd;
     }
 
-    public function getCodArmadio(): string {
+    public function getCodArmadio(): ID {
         return $this->codArmadio;
     }
 
-    public function setCodArmadio(string $codArmadio): void {
+    public function setCodArmadio(ID $codArmadio): void {
         $this->codArmadio = $codArmadio;
     }
 
-    public function getCodScaffale(): string {
+    public function getCodScaffale(): ID {
         return $this->codScaffale;
     }
 
-    public function setCodScaffale(string $codScaffale): void {
+    public function setCodScaffale(ID $codScaffale): void {
         $this->codScaffale = $codScaffale;
     }
 

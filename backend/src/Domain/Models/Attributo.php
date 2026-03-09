@@ -1,31 +1,31 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-
+use src\Domain\ValuesObjects\ID;
 /**
  * Class Attributo
  *
  * @package src\Domain\Models
- * @property string $codAttr
+ * @property ID $codAttr
  * @property string $nome
  */
 class Attributo {
-    private string $codAttr;
+    private ID $codAttr;
     private string $nome;
 
-    public function __construct(string $codAttr, string $nome) {
+    public function __construct(ID $codAttr, string $nome) {
         $this->codAttr = $codAttr;
         $this->nome = $nome;
     }
 
-    public static function reconstituteFromDatabase(string $codAttr, string $nome): self {
+    public static function reconstituteFromDatabase(ID $codAttr, string $nome): self {
         return new self($codAttr, $nome);
     }
 
-    public function getCodAttr(): string {
+    public function getCodAttr(): ID {
         return $this->codAttr;
     }
 
-    public function setCodAttr(string $codAttr): void {
+    public function setCodAttr(ID $codAttr): void {
         $this->codAttr = $codAttr;
     }
 

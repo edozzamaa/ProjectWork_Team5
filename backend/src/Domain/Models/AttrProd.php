@@ -1,42 +1,42 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-
+use src\Domain\ValuesObjects\ID;
 /**
  * Class AttrProd
  *
  * @package src\Domain\Models
- * @property string $codProd
- * @property string $codAttr
+ * @property ID $codProd
+ * @property ID $codAttr
  * @property ?string $valore
  */
 class AttrProd {
-    private string $codProd;
-    private string $codAttr;
+    private ID $codProd;
+    private ID $codAttr;
     private ?string $valore;
 
-    public function __construct(string $codProd, string $codAttr, ?string $valore = null) {
+    public function __construct(ID $codProd, ID $codAttr, ?string $valore = null) {
         $this->codProd = $codProd;
         $this->codAttr = $codAttr;
         $this->valore = $valore;
     }
 
-    public static function reconstituteFromDatabase(string $codProd, string $codAttr, ?string $valore): self {
+    public static function reconstituteFromDatabase(ID $codProd, ID $codAttr, ?string $valore): self {
         return new self($codProd, $codAttr, $valore);
     }
 
-    public function getCodProd(): string {
+    public function getCodProd(): ID {
         return $this->codProd;
     }
 
-    public function setCodProd(string $codProd): void {
+    public function setCodProd(ID $codProd): void {
         $this->codProd = $codProd;
     }
 
-    public function getCodAttr(): string {
+    public function getCodAttr(): ID {
         return $this->codAttr;
     }
 
-    public function setCodAttr(string $codAttr): void {
+    public function setCodAttr(ID $codAttr): void {
         $this->codAttr = $codAttr;
     }
 

@@ -1,34 +1,34 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-
+use src\Domain\ValuesObjects\ID;
 /**
  * Class CodificaOE
  *
  * @package src\Domain\Models
- * @property string $codOE
+ * @property ID $codOE
  * @property string $descrizione
- * @property ?string $ragSoc
+ * @property ?ID $ragSoc
  */
 class CodificaOE {
-    private string $codOE;
+    private ID $codOE;
     private string $descrizione;
-    private ?string $ragSoc;
+    private ?ID $ragSoc;
 
-    public function __construct(string $codOE, string $descrizione, ?string $ragSoc = null) {
+    public function __construct(ID $codOE, string $descrizione, ?ID $ragSoc = null) {
         $this->codOE = $codOE;
         $this->descrizione = $descrizione;
         $this->ragSoc = $ragSoc;
     }
 
-    public static function reconstituteFromDatabase(string $codOE, string $descrizione, ?string $ragSoc): self {
+    public static function reconstituteFromDatabase(ID $codOE, string $descrizione, ?ID $ragSoc): self {
         return new self($codOE, $descrizione, $ragSoc);
     }
 
-    public function getCodOE(): string {
+    public function getCodOE(): ID {
         return $this->codOE;
     }
 
-    public function setCodOE(string $codOE): void {
+    public function setCodOE(ID $codOE): void {
         $this->codOE = $codOE;
     }
 
@@ -40,11 +40,11 @@ class CodificaOE {
         $this->descrizione = $descrizione;
     }
 
-    public function getRagSoc(): ?string {
+    public function getRagSoc(): ?ID {
         return $this->ragSoc;
     }
 
-    public function setRagSoc(?string $ragSoc): void {
+    public function setRagSoc(?ID $ragSoc): void {
         $this->ragSoc = $ragSoc;
     }
 }
