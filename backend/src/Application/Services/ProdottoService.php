@@ -5,6 +5,7 @@ use src\Domain\Models\Prodotto;
 use src\Domain\Models\AttrProd;
 use src\Domain\Models\PosProd;
 use src\Domain\ValuesObject\ID;
+use src\Domain\ValuesObjects\Quantita;
 use src\Application\Interfaces\IProdottoService;
 use src\Application\DTO\ProdottoDTO;
 use src\Application\DTO\AttrProdDTO;
@@ -32,7 +33,7 @@ class ProdottoService implements IProdottoService {
     private function toDTO(Prodotto $prodotto, ?int $giacenzaTotale = null): ProdottoDTO {
         return new ProdottoDTO(
             (string) $prodotto->getCodProd(),
-            $prodotto->getQtaRiordino(),
+            $prodotto->getQtaRiordino()->getValore(),
             $prodotto->getCodCat() !== null ? (string) $prodotto->getCodCat() : null,
             $prodotto->getCodReg() !== null ? (string) $prodotto->getCodReg() : null,
             $prodotto->getCodOE() !== null ? (string) $prodotto->getCodOE() : null,
@@ -71,7 +72,7 @@ class ProdottoService implements IProdottoService {
         }
         $prodotto = new Prodotto(
             new ID($codProd),
-            $qtaRiordino,
+            new Quantita($qtaRiordino),
             $codCat !== null ? new ID($codCat) : null,
             $codReg !== null ? new ID($codReg) : null,
             $codOE !== null ? new ID($codOE) : null
@@ -84,7 +85,7 @@ class ProdottoService implements IProdottoService {
         if ($prodotto === null) {
             throw new \RuntimeException("Prodotto '{$codProd}' non trovato.");
         }
-        $prodotto->setQtaRiordino($qtaRiordino);
+        $prodotto->setQtaRiordino(new Quantita($qtaRiordino));
         $prodotto->setCodCat($codCat !== null ? new ID($codCat) : null);
         $prodotto->setCodReg($codReg !== null ? new ID($codReg) : null);
         $prodotto->setCodOE($codOE !== null ? new ID($codOE) : null);
@@ -126,14 +127,14 @@ class ProdottoService implements IProdottoService {
         $giacenza = $this->giacenzaRepository->find(new ID($codProd), new ID($codArmadio), new ID($codScaffale));
 
         if ($giacenza !== null) {
-            $giacenza->setQta($giacenza->getQta() + $qta);
+            $giacenza->setQta($giacenza->getQta()->aggiungi($qta));
             $this->giacenzaRepository->save($giacenza);
         } else {
             $nuovaGiacenza = new PosProd(
                 new ID($codProd),
                 new ID($codArmadio),
                 new ID($codScaffale),
-                $qta
+                new Quantita($qta)
             );
             $this->giacenzaRepository->save($nuovaGiacenza);
         }
@@ -161,14 +162,8 @@ class ProdottoService implements IProdottoService {
             throw new \RuntimeException("Nessuna giacenza trovata per '{$codProd}' nella posizione '{$codArmadio}/{$codScaffale}'.");
         }
 
-        if ($giacenza->getQta() < $qta) {
-            throw new \RuntimeException(
-                "Quantità insufficiente: disponibile {$giacenza->getQta()}, richiesta {$qta}."
-            );
-        }
-
-        $nuovaQta = $giacenza->getQta() - $qta;
-        if ($nuovaQta === 0) {
+        $nuovaQta = $giacenza->getQta()->sottrai($qta);
+        if ($nuovaQta->isZero()) {
             $this->giacenzaRepository->delete(new ID($codProd), new ID($codArmadio), new ID($codScaffale));
         } else {
             $giacenza->setQta($nuovaQta);
@@ -178,7 +173,7 @@ class ProdottoService implements IProdottoService {
         $giacenzaTotale = $this->giacenzaRepository->giacenzaTotale(new ID($codProd));
         $sottoSoglia = $prodotto->necessitaRiordino($giacenzaTotale);
 
-        return new ScaricoProdottoResultDTO($sottoSoglia, $prodotto->getQtaRiordino(), $giacenzaTotale);
+        return new ScaricoProdottoResultDTO($sottoSoglia, $prodotto->getQtaRiordino()->getValore(), $giacenzaTotale);
     }
 
     // ── Ricerca Prodotto ──

@@ -59,7 +59,7 @@ class ReportService implements IReportService {
 
             $prodottiDTO[] = new ProdottoDTO(
                 $codProd,
-                $prodotto->getQtaRiordino(),
+                $prodotto->getQtaRiordino()->getValore(),
                 $prodotto->getCodCat() !== null ? (string) $prodotto->getCodCat() : null,
                 $prodotto->getCodReg() !== null ? (string) $prodotto->getCodReg() : null,
                 $prodotto->getCodOE() !== null ? (string) $prodotto->getCodOE() : null,
@@ -88,7 +88,7 @@ class ReportService implements IReportService {
 
             $report[] = new ReportProdottoDTO(
                 $codProd,
-                $prodotto->getQtaRiordino(),
+                $prodotto->getQtaRiordino()->getValore(),
                 $giacenzaTotale,
                 $prodotto->necessitaRiordino($giacenzaTotale),
                 $prodotto->getCodCat() !== null ? (string) $prodotto->getCodCat() : null,
@@ -107,7 +107,7 @@ class ReportService implements IReportService {
                 (string) $p->getCodProd(),
                 (string) $p->getCodArmadio(),
                 (string) $p->getCodScaffale(),
-                $p->getQta()
+                $p->getQta()->getValore()
             ),
             $this->giacenzaRepository->findAll()
         );

@@ -4,6 +4,8 @@ namespace src\Application\Services;
 use src\Domain\Models\Fornitore;
 use src\Domain\ValuesObject\ID;
 use src\Domain\ValuesObjects\Email;
+use src\Domain\ValuesObjects\PartitaIVA;
+use src\Domain\ValuesObjects\Telefono;
 use src\Application\Interfaces\IFornitoreService;
 use src\Application\DTO\FornitoreDTO;
 use src\Infrastructure\Repositories\FornitoreRepository;
@@ -19,8 +21,8 @@ class FornitoreService implements IFornitoreService {
     private function toDTO(Fornitore $fornitore): FornitoreDTO {
         return new FornitoreDTO(
             (string) $fornitore->getRagSoc(),
-            $fornitore->getPartIVA(),
-            $fornitore->getTelefono(),
+            $fornitore->getPartIVA() !== null ? (string) $fornitore->getPartIVA() : null,
+            $fornitore->getTelefono() !== null ? (string) $fornitore->getTelefono() : null,
             $fornitore->getIndirizzo(),
             $fornitore->getEmail() !== null ? (string) $fornitore->getEmail()->getEmail() : null
         );
@@ -42,8 +44,8 @@ class FornitoreService implements IFornitoreService {
         }
         $fornitore = new Fornitore(
             new ID($ragSoc),
-            $partIVA,
-            $telefono,
+            $partIVA !== null ? new PartitaIVA($partIVA) : null,
+            $telefono !== null ? new Telefono($telefono) : null,
             $indirizzo,
             $email !== null ? new Email($email) : null
         );
@@ -55,8 +57,8 @@ class FornitoreService implements IFornitoreService {
         if ($fornitore === null) {
             throw new \RuntimeException("Fornitore '{$ragSoc}' non trovato.");
         }
-        $fornitore->setPartIVA($partIVA);
-        $fornitore->setTelefono($telefono);
+        $fornitore->setPartIVA($partIVA !== null ? new PartitaIVA($partIVA) : null);
+        $fornitore->setTelefono($telefono !== null ? new Telefono($telefono) : null);
         $fornitore->setIndirizzo($indirizzo);
         $fornitore->setEmail($email !== null ? new Email($email) : null);
         $this->fornitoreRepository->save($fornitore);

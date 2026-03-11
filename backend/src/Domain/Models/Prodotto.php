@@ -1,24 +1,25 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
 use src\Domain\ValuesObjects\ID;
+use src\Domain\ValuesObjects\Quantita;
 /**
  * Class Prodotto
  *
  * @package src\Domain\Models
  * @property ID $codProd
- * @property int $qtaRiordino
+ * @property Quantita $qtaRiordino
  * @property ?ID $codCat
  * @property ?ID $codReg
  * @property ?ID $codOE
  */
 class Prodotto {
     private ID $codProd;
-    private int $qtaRiordino;
+    private Quantita $qtaRiordino;
     private ?ID $codCat;
     private ?ID $codReg;
     private ?ID $codOE;
 
-    public function __construct(ID $codProd, int $qtaRiordino = 0, ?ID $codCat = null, ?ID $codReg = null, ?ID $codOE = null) {
+    public function __construct(ID $codProd, Quantita $qtaRiordino, ?ID $codCat = null, ?ID $codReg = null, ?ID $codOE = null) {
         $this->codProd = $codProd;
         $this->qtaRiordino = $qtaRiordino;
         $this->codCat = $codCat;
@@ -26,7 +27,7 @@ class Prodotto {
         $this->codOE = $codOE;
     }
 
-    public static function reconstituteFromDatabase(ID $codProd, int $qtaRiordino, ?ID $codCat, ?ID $codReg, ?ID $codOE): self {
+    public static function reconstituteFromDatabase(ID $codProd, Quantita $qtaRiordino, ?ID $codCat, ?ID $codReg, ?ID $codOE): self {
         return new self($codProd, $qtaRiordino, $codCat, $codReg, $codOE);
     }
 
@@ -38,11 +39,11 @@ class Prodotto {
         $this->codProd = $codProd;
     }
 
-    public function getQtaRiordino(): int {
+    public function getQtaRiordino(): Quantita {
         return $this->qtaRiordino;
     }
 
-    public function setQtaRiordino(int $qtaRiordino): void {
+    public function setQtaRiordino(Quantita $qtaRiordino): void {
         $this->qtaRiordino = $qtaRiordino;
     }
 
@@ -71,6 +72,6 @@ class Prodotto {
     }
 
     public function necessitaRiordino(int $giacenzaTotale): bool {
-        return $giacenzaTotale < $this->qtaRiordino;
+        return $giacenzaTotale < $this->qtaRiordino->getValore();
     }
 }

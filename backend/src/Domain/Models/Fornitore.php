@@ -3,24 +3,26 @@ namespace src\Domain\Models;
 
 use src\Domain\ValuesObjects\Email;
 use src\Domain\ValuesObjects\ID;
+use src\Domain\ValuesObjects\PartitaIVA;
+use src\Domain\ValuesObjects\Telefono;
 /**
  * Class Fornitore
  *
  * @package src\Domain\Models
  * @property ID $ragSoc
- * @property ?string $partIVA
- * @property ?string $telefono
+ * @property ?PartitaIVA $partIVA
+ * @property ?Telefono $telefono
  * @property ?string $indirizzo
  * @property ?Email $email
  */
 class Fornitore {
     private ID $ragSoc;
-    private ?string $partIVA;
-    private ?string $telefono;
+    private ?PartitaIVA $partIVA;
+    private ?Telefono $telefono;
     private ?string $indirizzo;
     private ?Email $email;
 
-    public function __construct(ID $ragSoc, ?string $partIVA = null, ?string $telefono = null, ?string $indirizzo = null, ?Email $email = null) {
+    public function __construct(ID $ragSoc, ?PartitaIVA $partIVA = null, ?Telefono $telefono = null, ?string $indirizzo = null, ?Email $email = null) {
         $this->ragSoc = $ragSoc;
         $this->partIVA = $partIVA;
         $this->telefono = $telefono;
@@ -28,7 +30,7 @@ class Fornitore {
         $this->email = $email;
     }
 
-    public static function reconstituteFromDatabase(ID $ragSoc, ?string $partIVA, ?string $telefono, ?string $indirizzo, ?Email $email): self {
+    public static function reconstituteFromDatabase(ID $ragSoc, ?PartitaIVA $partIVA, ?Telefono $telefono, ?string $indirizzo, ?Email $email): self {
         return new self($ragSoc, $partIVA, $telefono, $indirizzo, $email);
     }
 
@@ -40,19 +42,19 @@ class Fornitore {
         $this->ragSoc = $ragSoc;
     }
 
-    public function getPartIVA(): ?string {
+    public function getPartIVA(): ?PartitaIVA {
         return $this->partIVA;
     }
 
-    public function setPartIVA(?string $partIVA): void {
+    public function setPartIVA(?PartitaIVA $partIVA): void {
         $this->partIVA = $partIVA;
     }
 
-    public function getTelefono(): ?string {
+    public function getTelefono(): ?Telefono {
         return $this->telefono;
     }
 
-    public function setTelefono(?string $telefono): void {
+    public function setTelefono(?Telefono $telefono): void {
         $this->telefono = $telefono;
     }
 
