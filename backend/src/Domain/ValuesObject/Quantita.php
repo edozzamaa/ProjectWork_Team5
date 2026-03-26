@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-    namespace src\Domain\ValuesObjects;
+    namespace src\Domain\ValuesObject;
 
     class Quantita {
         private int $valore;

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-use src\Domain\ValuesObjects\ID;
+use src\Domain\ValuesObject\ID;
 /**
  * Class Armadio
  *

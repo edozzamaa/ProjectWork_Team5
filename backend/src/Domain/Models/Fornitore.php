@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
 
-use src\Domain\ValuesObjects\Email;
-use src\Domain\ValuesObjects\ID;
-use src\Domain\ValuesObjects\PartitaIVA;
-use src\Domain\ValuesObjects\Telefono;
+use src\Domain\ValuesObject\Email;
+use src\Domain\ValuesObject\ID;
+use src\Domain\ValuesObject\PartitaIVA;
+use src\Domain\ValuesObject\Telefono;
 /**
  * Class Fornitore
  *

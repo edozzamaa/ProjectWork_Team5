@@ -5,7 +5,7 @@ use src\Domain\Models\Prodotto;
 use src\Domain\Models\AttrProd;
 use src\Domain\Models\PosProd;
 use src\Domain\ValuesObject\ID;
-use src\Domain\ValuesObjects\Quantita;
+use src\Domain\ValuesObject\Quantita;
 use src\Application\Interfaces\IProdottoService;
 use src\Application\DTO\ProdottoDTO;
 use src\Application\DTO\AttrProdDTO;

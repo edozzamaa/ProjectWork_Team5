@@ -3,9 +3,9 @@ namespace src\Application\Services;
 
 use src\Domain\Models\Fornitore;
 use src\Domain\ValuesObject\ID;
-use src\Domain\ValuesObjects\Email;
-use src\Domain\ValuesObjects\PartitaIVA;
-use src\Domain\ValuesObjects\Telefono;
+use src\Domain\ValuesObject\Email;
+use src\Domain\ValuesObject\PartitaIVA;
+use src\Domain\ValuesObject\Telefono;
 use src\Application\Interfaces\IFornitoreService;
 use src\Application\DTO\FornitoreDTO;
 use src\Infrastructure\Repositories\FornitoreRepository;
