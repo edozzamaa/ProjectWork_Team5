@@ -1,39 +1,38 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-use src\Domain\ValuesObject\ID;
+use src\Domain\ValueObjects\Categoria\CategoriaId;
+use src\Domain\ValueObjects\Categoria\CategoriaTipo;
 /**
  * Class Categoria
  *
  * @package src\Domain\Models
- * @property ID $codCat
- * @property string $tipo
  */
 class Categoria {
-    private ID $codCat;
-    private string $tipo;
+    private CategoriaId $codCat;
+    private CategoriaTipo $tipo;
 
-    public function __construct(ID $codCat, string $tipo) {
+    public function __construct(CategoriaId $codCat, CategoriaTipo $tipo) {
         $this->codCat = $codCat;
         $this->tipo = $tipo;
     }
 
-    public static function reconstituteFromDatabase(ID $codCat, string $tipo): self {
+    public static function reconstituteFromDatabase(CategoriaId $codCat, CategoriaTipo $tipo): self {
         return new self($codCat, $tipo);
     }
 
-    public function getCodCat(): ID {
+    public function getCodCat(): CategoriaId {
         return $this->codCat;
     }
 
-    public function setCodCat(ID $codCat): void {
+    public function setCodCat(CategoriaId $codCat): void {
         $this->codCat = $codCat;
     }
 
-    public function getTipo(): string {
+    public function getTipo(): CategoriaTipo {
         return $this->tipo;
     }
 
-    public function setTipo(string $tipo): void {
+    public function setTipo(CategoriaTipo $tipo): void {
         $this->tipo = $tipo;
     }
 }

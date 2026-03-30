@@ -1,39 +1,38 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-use src\Domain\ValuesObject\ID;
+use src\Domain\ValueObjects\Attributo\AttributoId;
+use src\Domain\ValueObjects\Attributo\AttributoNome;
 /**
  * Class Attributo
  *
  * @package src\Domain\Models
- * @property ID $codAttr
- * @property string $nome
  */
 class Attributo {
-    private ID $codAttr;
-    private string $nome;
+    private AttributoId $codAttr;
+    private AttributoNome $nome;
 
-    public function __construct(ID $codAttr, string $nome) {
+    public function __construct(AttributoId $codAttr, AttributoNome $nome) {
         $this->codAttr = $codAttr;
         $this->nome = $nome;
     }
 
-    public static function reconstituteFromDatabase(ID $codAttr, string $nome): self {
+    public static function reconstituteFromDatabase(AttributoId $codAttr, AttributoNome $nome): self {
         return new self($codAttr, $nome);
     }
 
-    public function getCodAttr(): ID {
+    public function getCodAttr(): AttributoId {
         return $this->codAttr;
     }
 
-    public function setCodAttr(ID $codAttr): void {
+    public function setCodAttr(AttributoId $codAttr): void {
         $this->codAttr = $codAttr;
     }
 
-    public function getNome(): string {
+    public function getNome(): AttributoNome {
         return $this->nome;
     }
 
-    public function setNome(string $nome): void {
+    public function setNome(AttributoNome $nome): void {
         $this->nome = $nome;
     }
 }

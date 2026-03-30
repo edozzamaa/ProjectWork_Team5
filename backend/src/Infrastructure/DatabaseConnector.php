@@ -12,7 +12,7 @@ class DatabaseConnector {
     private function __construct() {
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-        $configPath = __DIR__ . '/../../config/database.ini';
+        $configPath = __DIR__ . '/../../conf/database.ini';
         $config = parse_ini_file($configPath, false, INI_SCANNER_TYPED);
 
         if ($config === false) {

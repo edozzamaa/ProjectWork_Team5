@@ -1,50 +1,49 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-use src\Domain\ValuesObject\ID;
+use src\Domain\ValueObjects\Prodotto\ProdottoId;
+use src\Domain\ValueObjects\Attributo\AttributoId;
+use src\Domain\ValueObjects\AttrProd\ValoreAttributo;
 /**
  * Class AttrProd
  *
  * @package src\Domain\Models
- * @property ID $codProd
- * @property ID $codAttr
- * @property ?string $valore
  */
 class AttrProd {
-    private ID $codProd;
-    private ID $codAttr;
-    private ?string $valore;
+    private ProdottoId $codProd;
+    private AttributoId $codAttr;
+    private ?ValoreAttributo $valore;
 
-    public function __construct(ID $codProd, ID $codAttr, ?string $valore = null) {
+    public function __construct(ProdottoId $codProd, AttributoId $codAttr, ?ValoreAttributo $valore = null) {
         $this->codProd = $codProd;
         $this->codAttr = $codAttr;
         $this->valore = $valore;
     }
 
-    public static function reconstituteFromDatabase(ID $codProd, ID $codAttr, ?string $valore): self {
+    public static function reconstituteFromDatabase(ProdottoId $codProd, AttributoId $codAttr, ?ValoreAttributo $valore): self {
         return new self($codProd, $codAttr, $valore);
     }
 
-    public function getCodProd(): ID {
+    public function getCodProd(): ProdottoId {
         return $this->codProd;
     }
 
-    public function setCodProd(ID $codProd): void {
+    public function setCodProd(ProdottoId $codProd): void {
         $this->codProd = $codProd;
     }
 
-    public function getCodAttr(): ID {
+    public function getCodAttr(): AttributoId {
         return $this->codAttr;
     }
 
-    public function setCodAttr(ID $codAttr): void {
+    public function setCodAttr(AttributoId $codAttr): void {
         $this->codAttr = $codAttr;
     }
 
-    public function getValore(): ?string {
+    public function getValore(): ?ValoreAttributo {
         return $this->valore;
     }
 
-    public function setValore(?string $valore): void {
+    public function setValore(?ValoreAttributo $valore): void {
         $this->valore = $valore;
     }
 }

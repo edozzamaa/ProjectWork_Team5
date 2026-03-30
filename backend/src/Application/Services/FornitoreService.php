@@ -2,19 +2,20 @@
 namespace src\Application\Services;
 
 use src\Domain\Models\Fornitore;
-use src\Domain\ValuesObject\ID;
-use src\Domain\ValuesObject\Email;
-use src\Domain\ValuesObject\PartitaIVA;
-use src\Domain\ValuesObject\Telefono;
-use src\Application\Interfaces\IFornitoreService;
+use src\Domain\ValueObjects\Fornitore\FornitoreId;
+use src\Domain\ValueObjects\Fornitore\Email;
+use src\Domain\ValueObjects\Fornitore\PartitaIVA;
+use src\Domain\ValueObjects\Fornitore\Telefono;
+use src\Domain\ValueObjects\Fornitore\Indirizzo;
+use src\Application\Interfaces\IServices\IFornitoreService;
 use src\Application\DTO\FornitoreDTO;
-use src\Infrastructure\Repositories\FornitoreRepository;
+use src\Application\Interfaces\IRepositories\IFornitoreRepository;
 
 class FornitoreService implements IFornitoreService {
 
-    private FornitoreRepository $fornitoreRepository;
+    private IFornitoreRepository $fornitoreRepository;
 
-    public function __construct(FornitoreRepository $fornitoreRepository) {
+    public function __construct(IFornitoreRepository $fornitoreRepository) {
         $this->fornitoreRepository = $fornitoreRepository;
     }
 
@@ -23,8 +24,8 @@ class FornitoreService implements IFornitoreService {
             (string) $fornitore->getRagSoc(),
             $fornitore->getPartIVA() !== null ? (string) $fornitore->getPartIVA() : null,
             $fornitore->getTelefono() !== null ? (string) $fornitore->getTelefono() : null,
-            $fornitore->getIndirizzo(),
-            $fornitore->getEmail() !== null ? (string) $fornitore->getEmail()->getEmail() : null
+            $fornitore->getIndirizzo()?->value,
+            $fornitore->getEmail() !== null ? $fornitore->getEmail()->value : null
         );
     }
 
@@ -34,40 +35,40 @@ class FornitoreService implements IFornitoreService {
     }
 
     public function getByRagSoc(string $ragSoc): ?FornitoreDTO {
-        $fornitore = $this->fornitoreRepository->findByRagSoc(new ID($ragSoc));
+        $fornitore = $this->fornitoreRepository->findByRagSoc(new FornitoreId($ragSoc));
         return $fornitore !== null ? $this->toDTO($fornitore) : null;
     }
 
     public function crea(string $ragSoc, ?string $partIVA = null, ?string $telefono = null, ?string $indirizzo = null, ?string $email = null): void {
-        if ($this->fornitoreRepository->findByRagSoc(new ID($ragSoc)) !== null) {
+        if ($this->fornitoreRepository->findByRagSoc(new FornitoreId($ragSoc)) !== null) {
             throw new \RuntimeException("Fornitore '{$ragSoc}' già esistente.");
         }
         $fornitore = new Fornitore(
-            new ID($ragSoc),
+            new FornitoreId($ragSoc),
             $partIVA !== null ? new PartitaIVA($partIVA) : null,
             $telefono !== null ? new Telefono($telefono) : null,
-            $indirizzo,
+            $indirizzo !== null ? new Indirizzo($indirizzo) : null,
             $email !== null ? new Email($email) : null
         );
         $this->fornitoreRepository->save($fornitore);
     }
 
     public function aggiorna(string $ragSoc, ?string $partIVA = null, ?string $telefono = null, ?string $indirizzo = null, ?string $email = null): void {
-        $fornitore = $this->fornitoreRepository->findByRagSoc(new ID($ragSoc));
+        $fornitore = $this->fornitoreRepository->findByRagSoc(new FornitoreId($ragSoc));
         if ($fornitore === null) {
             throw new \RuntimeException("Fornitore '{$ragSoc}' non trovato.");
         }
         $fornitore->setPartIVA($partIVA !== null ? new PartitaIVA($partIVA) : null);
         $fornitore->setTelefono($telefono !== null ? new Telefono($telefono) : null);
-        $fornitore->setIndirizzo($indirizzo);
+        $fornitore->setIndirizzo($indirizzo !== null ? new Indirizzo($indirizzo) : null);
         $fornitore->setEmail($email !== null ? new Email($email) : null);
         $this->fornitoreRepository->save($fornitore);
     }
 
     public function elimina(string $ragSoc): void {
-        if ($this->fornitoreRepository->findByRagSoc(new ID($ragSoc)) === null) {
+        if ($this->fornitoreRepository->findByRagSoc(new FornitoreId($ragSoc)) === null) {
             throw new \RuntimeException("Fornitore '{$ragSoc}' non trovato.");
         }
-        $this->fornitoreRepository->delete(new ID($ragSoc));
+        $this->fornitoreRepository->delete(new FornitoreId($ragSoc));
     }
 }

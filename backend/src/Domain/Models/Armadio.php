@@ -1,39 +1,38 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-use src\Domain\ValuesObject\ID;
+use src\Domain\ValueObjects\Armadio\ArmadioId;
+use src\Domain\ValueObjects\Armadio\ArmadioDescrizione;
 /**
  * Class Armadio
  *
  * @package src\Domain\Models
- * @property ID $codArmadio
- * @property ?string $descrizione
  */
 class Armadio {
-    private ID $codArmadio;
-    private ?string $descrizione;
+    private ArmadioId $codArmadio;
+    private ?ArmadioDescrizione $descrizione;
 
-    public function __construct(ID $codArmadio, ?string $descrizione = null) {
+    public function __construct(ArmadioId $codArmadio, ?ArmadioDescrizione $descrizione = null) {
         $this->codArmadio = $codArmadio;
         $this->descrizione = $descrizione;
     }
 
-    public static function reconstituteFromDatabase(ID $codArmadio, ?string $descrizione): self {
+    public static function reconstituteFromDatabase(ArmadioId $codArmadio, ?ArmadioDescrizione $descrizione): self {
         return new self($codArmadio, $descrizione);
     }
 
-    public function getCodArmadio(): ID {
+    public function getCodArmadio(): ArmadioId {
         return $this->codArmadio;
     }
 
-    public function setCodArmadio(ID $codArmadio): void {
+    public function setCodArmadio(ArmadioId $codArmadio): void {
         $this->codArmadio = $codArmadio;
     }
 
-    public function getDescrizione(): ?string {
+    public function getDescrizione(): ?ArmadioDescrizione {
         return $this->descrizione;
     }
 
-    public function setDescrizione(?string $descrizione): void {
+    public function setDescrizione(?ArmadioDescrizione $descrizione): void {
         $this->descrizione = $descrizione;
     }
 }

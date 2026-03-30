@@ -3,21 +3,24 @@ namespace src\Application\Services;
 
 use src\Domain\Models\Attributo;
 use src\Domain\Models\AttrProd;
-use src\Domain\ValuesObject\ID;
-use src\Application\Interfaces\IAttributoService;
+use src\Domain\ValueObjects\Attributo\AttributoId;
+use src\Domain\ValueObjects\Attributo\AttributoNome;
+use src\Domain\ValueObjects\Prodotto\ProdottoId;
+use src\Domain\ValueObjects\AttrProd\ValoreAttributo;
+use src\Application\Interfaces\IServices\IAttributoService;
 use src\Application\DTO\AttributoDTO;
 use src\Application\DTO\AttrProdDTO;
-use src\Infrastructure\Repositories\AttributoRepository;
-use src\Infrastructure\Repositories\ProdottoRepository;
+use src\Application\Interfaces\IRepositories\IAttributoRepository;
+use src\Application\Interfaces\IRepositories\IProdottoRepository;
 
 class AttributoService implements IAttributoService {
 
-    private AttributoRepository $attributoRepository;
-    private ProdottoRepository $prodottoRepository;
+    private IAttributoRepository $attributoRepository;
+    private IProdottoRepository $prodottoRepository;
 
     public function __construct(
-        AttributoRepository $attributoRepository,
-        ProdottoRepository $prodottoRepository
+        IAttributoRepository $attributoRepository,
+        IProdottoRepository $prodottoRepository
     ) {
         $this->attributoRepository = $attributoRepository;
         $this->prodottoRepository = $prodottoRepository;
@@ -26,7 +29,7 @@ class AttributoService implements IAttributoService {
     private function toDTO(Attributo $attributo): AttributoDTO {
         return new AttributoDTO(
             (string) $attributo->getCodAttr(),
-            $attributo->getNome()
+            $attributo->getNome()->value
         );
     }
 
@@ -34,7 +37,7 @@ class AttributoService implements IAttributoService {
         return new AttrProdDTO(
             (string) $attrProd->getCodProd(),
             (string) $attrProd->getCodAttr(),
-            $attrProd->getValore()
+            $attrProd->getValore()?->value
         );
     }
 
@@ -46,53 +49,53 @@ class AttributoService implements IAttributoService {
     }
 
     public function getByCod(string $codAttr): ?AttributoDTO {
-        $attributo = $this->attributoRepository->findByCod(new ID($codAttr));
+        $attributo = $this->attributoRepository->findByCod(new AttributoId($codAttr));
         return $attributo !== null ? $this->toDTO($attributo) : null;
     }
 
     public function crea(string $codAttr, string $nome): void {
-        if ($this->attributoRepository->findByCod(new ID($codAttr)) !== null) {
+        if ($this->attributoRepository->findByCod(new AttributoId($codAttr)) !== null) {
             throw new \RuntimeException("Attributo '{$codAttr}' già esistente.");
         }
-        $attributo = new Attributo(new ID($codAttr), $nome);
+        $attributo = new Attributo(new AttributoId($codAttr), new AttributoNome($nome));
         $this->attributoRepository->save($attributo);
     }
 
     public function aggiorna(string $codAttr, string $nome): void {
-        $attributo = $this->attributoRepository->findByCod(new ID($codAttr));
+        $attributo = $this->attributoRepository->findByCod(new AttributoId($codAttr));
         if ($attributo === null) {
             throw new \RuntimeException("Attributo '{$codAttr}' non trovato.");
         }
-        $attributo->setNome($nome);
+        $attributo->setNome(new AttributoNome($nome));
         $this->attributoRepository->save($attributo);
     }
 
     public function elimina(string $codAttr): void {
-        if ($this->attributoRepository->findByCod(new ID($codAttr)) === null) {
+        if ($this->attributoRepository->findByCod(new AttributoId($codAttr)) === null) {
             throw new \RuntimeException("Attributo '{$codAttr}' non trovato.");
         }
-        $this->attributoRepository->delete(new ID($codAttr));
+        $this->attributoRepository->delete(new AttributoId($codAttr));
     }
 
     // ── Assegnazione Attributi a Prodotto ──
 
     public function assegnaAProdotto(string $codProd, string $codAttr, ?string $valore = null): void {
-        if ($this->prodottoRepository->findByCod(new ID($codProd)) === null) {
+        if ($this->prodottoRepository->findByCod(new ProdottoId($codProd)) === null) {
             throw new \RuntimeException("Prodotto '{$codProd}' non trovato.");
         }
-        if ($this->attributoRepository->findByCod(new ID($codAttr)) === null) {
+        if ($this->attributoRepository->findByCod(new AttributoId($codAttr)) === null) {
             throw new \RuntimeException("Attributo '{$codAttr}' non trovato.");
         }
-        $attrProd = new AttrProd(new ID($codProd), new ID($codAttr), $valore);
+        $attrProd = new AttrProd(new ProdottoId($codProd), new AttributoId($codAttr), $valore !== null ? new ValoreAttributo($valore) : null);
         $this->prodottoRepository->saveAttributo($attrProd);
     }
 
     public function rimuoviDaProdotto(string $codProd, string $codAttr): void {
-        $this->prodottoRepository->deleteAttributo(new ID($codProd), new ID($codAttr));
+        $this->prodottoRepository->deleteAttributo(new ProdottoId($codProd), new AttributoId($codAttr));
     }
 
     /** @return AttrProdDTO[] */
     public function getAttributiProdotto(string $codProd): array {
-        return array_map(fn(AttrProd $a) => $this->attrProdToDTO($a), $this->prodottoRepository->getAttributi(new ID($codProd)));
+        return array_map(fn(AttrProd $a) => $this->attrProdToDTO($a), $this->prodottoRepository->getAttributi(new ProdottoId($codProd)));
     }
 }

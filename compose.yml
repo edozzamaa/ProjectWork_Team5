@@ -1,0 +1,65 @@
+services:
+  backend:
+    build: backend/.
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "[ -s /var/www/html/conf/composer.lock ] || rm -f /var/www/html/conf/composer.lock; composer install --working-dir=/var/www/html/conf --no-interaction --prefer-dist --no-progress && apache2-foreground"
+    volumes:
+      - ./backend:/var/www/html
+      - backend_vendor:/var/www/html/vendor
+    networks:
+      - backend
+      - frontend
+  
+  db:
+    image: mariadb:12.1.2
+    env_file:
+      - db/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 15s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./db/:/docker-entrypoint-initdb.d/:ro
+    networks:
+      - backend
+      - db
+  
+  frontend:
+    build: ./frontend/.
+    volumes:
+      - ./frontend/Pages:/var/www/html:ro
+    ports:
+      - 80:80
+    networks:
+      - frontend
+
+
+  # Non eseguire per il deployment, solo in fase di test.
+  phpmyadmin:
+    image: phpmyadmin:5.2.3-apache
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - db
+
+volumes:
+  dbdata:
+  backend_vendor:
+
+networks:
+  backend:
+  frontend:
+  db:

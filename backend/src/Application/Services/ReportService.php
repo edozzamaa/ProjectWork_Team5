@@ -4,26 +4,26 @@ namespace src\Application\Services;
 use src\Domain\Models\Prodotto;
 use src\Domain\Models\Categoria;
 use src\Domain\Models\PosProd;
-use src\Application\Interfaces\IReportService;
+use src\Application\Interfaces\IServices\IReportService;
 use src\Application\DTO\ProdottoDTO;
 use src\Application\DTO\CategoriaDTO;
 use src\Application\DTO\PanoramicaDTO;
 use src\Application\DTO\ReportProdottoDTO;
 use src\Application\DTO\PosProdDTO;
-use src\Infrastructure\Repositories\GiacenzaRepository;
-use src\Infrastructure\Repositories\ProdottoRepository;
-use src\Infrastructure\Repositories\CategoriaRepository;
+use src\Application\Interfaces\IRepositories\IGiacenzaRepository;
+use src\Application\Interfaces\IRepositories\IProdottoRepository;
+use src\Application\Interfaces\IRepositories\ICategoriaRepository;
 
 class ReportService implements IReportService {
 
-    private GiacenzaRepository $giacenzaRepository;
-    private ProdottoRepository $prodottoRepository;
-    private CategoriaRepository $categoriaRepository;
+    private IGiacenzaRepository $giacenzaRepository;
+    private IProdottoRepository $prodottoRepository;
+    private ICategoriaRepository $categoriaRepository;
 
     public function __construct(
-        GiacenzaRepository $giacenzaRepository,
-        ProdottoRepository $prodottoRepository,
-        CategoriaRepository $categoriaRepository
+        IGiacenzaRepository $giacenzaRepository,
+        IProdottoRepository $prodottoRepository,
+        ICategoriaRepository $categoriaRepository
     ) {
         $this->giacenzaRepository = $giacenzaRepository;
         $this->prodottoRepository = $prodottoRepository;
@@ -59,7 +59,7 @@ class ReportService implements IReportService {
 
             $prodottiDTO[] = new ProdottoDTO(
                 $codProd,
-                $prodotto->getQtaRiordino()->getValore(),
+                $prodotto->getQtaRiordino()->value,
                 $prodotto->getCodCat() !== null ? (string) $prodotto->getCodCat() : null,
                 $prodotto->getCodReg() !== null ? (string) $prodotto->getCodReg() : null,
                 $prodotto->getCodOE() !== null ? (string) $prodotto->getCodOE() : null,
@@ -68,7 +68,7 @@ class ReportService implements IReportService {
         }
 
         $categorieDTO = array_map(
-            fn(Categoria $c) => new CategoriaDTO((string) $c->getCodCat(), $c->getTipo()),
+            fn(Categoria $c) => new CategoriaDTO((string) $c->getCodCat(), $c->getTipo()->value),
             $categorie
         );
 
@@ -88,7 +88,7 @@ class ReportService implements IReportService {
 
             $report[] = new ReportProdottoDTO(
                 $codProd,
-                $prodotto->getQtaRiordino()->getValore(),
+                $prodotto->getQtaRiordino()->value,
                 $giacenzaTotale,
                 $prodotto->necessitaRiordino($giacenzaTotale),
                 $prodotto->getCodCat() !== null ? (string) $prodotto->getCodCat() : null,
@@ -107,7 +107,7 @@ class ReportService implements IReportService {
                 (string) $p->getCodProd(),
                 (string) $p->getCodArmadio(),
                 (string) $p->getCodScaffale(),
-                $p->getQta()->getValore()
+                $p->getQta()->value
             ),
             $this->giacenzaRepository->findAll()
         );

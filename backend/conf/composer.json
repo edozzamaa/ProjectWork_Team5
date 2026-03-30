@@ -1,0 +1,22 @@
+{
+    "name": "team5/gestionale-magazzino",
+    "description": "Gestionale di magazzino.",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "ext-mysqli": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "src\\": "../src/"
+        },
+        "classmap": [
+            "../src/"
+        ]
+    },
+    "config": {
+        "vendor-dir": "../vendor",
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

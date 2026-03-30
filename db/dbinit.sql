@@ -129,17 +129,11 @@ LEFT JOIN CODIFICA_REG cr ON cr.codReg = p.codReg
 LEFT JOIN CODIFICA_OE co ON co.codOE = p.codOE
 LEFT JOIN FORNITORE f ON f.ragSoc = co.ragSoc;
 
--- ============================================================
--- Categorie obbligatorie
--- ============================================================
 INSERT INTO CATEGORIA (codCat, tipo) VALUES
     ('VES', 'Vestiario'),
     ('CAL', 'Calzature'),
     ('DIS', 'Dispositivi');
 
--- ============================================================
--- Attributi predefiniti
--- ============================================================
 INSERT INTO ATTRIBUTO (codAttr, nome) VALUES
     ('GEN', 'Genere'),
     ('STG', 'Stagione'),

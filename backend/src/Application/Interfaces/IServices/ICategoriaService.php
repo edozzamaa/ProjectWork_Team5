@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-namespace src\Application\Interfaces;
+namespace src\Application\Interfaces\IServices;
 
 use src\Application\DTO\CategoriaDTO;
 

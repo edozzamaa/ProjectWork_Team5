@@ -1,25 +1,23 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-use src\Domain\ValuesObject\ID;
-use src\Domain\ValuesObject\Quantita;
+use src\Domain\ValueObjects\Prodotto\ProdottoId;
+use src\Domain\ValueObjects\Prodotto\QuantitaRiordino;
+use src\Domain\ValueObjects\Categoria\CategoriaId;
+use src\Domain\ValueObjects\CodificaReg\CodificaRegId;
+use src\Domain\ValueObjects\CodificaOE\CodificaOEId;
 /**
  * Class Prodotto
  *
  * @package src\Domain\Models
- * @property ID $codProd
- * @property Quantita $qtaRiordino
- * @property ?ID $codCat
- * @property ?ID $codReg
- * @property ?ID $codOE
  */
 class Prodotto {
-    private ID $codProd;
-    private Quantita $qtaRiordino;
-    private ?ID $codCat;
-    private ?ID $codReg;
-    private ?ID $codOE;
+    private ProdottoId $codProd;
+    private QuantitaRiordino $qtaRiordino;
+    private ?CategoriaId $codCat;
+    private ?CodificaRegId $codReg;
+    private ?CodificaOEId $codOE;
 
-    public function __construct(ID $codProd, Quantita $qtaRiordino, ?ID $codCat = null, ?ID $codReg = null, ?ID $codOE = null) {
+    public function __construct(ProdottoId $codProd, QuantitaRiordino $qtaRiordino, ?CategoriaId $codCat = null, ?CodificaRegId $codReg = null, ?CodificaOEId $codOE = null) {
         $this->codProd = $codProd;
         $this->qtaRiordino = $qtaRiordino;
         $this->codCat = $codCat;
@@ -27,51 +25,51 @@ class Prodotto {
         $this->codOE = $codOE;
     }
 
-    public static function reconstituteFromDatabase(ID $codProd, Quantita $qtaRiordino, ?ID $codCat, ?ID $codReg, ?ID $codOE): self {
+    public static function reconstituteFromDatabase(ProdottoId $codProd, QuantitaRiordino $qtaRiordino, ?CategoriaId $codCat, ?CodificaRegId $codReg, ?CodificaOEId $codOE): self {
         return new self($codProd, $qtaRiordino, $codCat, $codReg, $codOE);
     }
 
-    public function getCodProd(): ID {
+    public function getCodProd(): ProdottoId {
         return $this->codProd;
     }
 
-    public function setCodProd(ID $codProd): void {
+    public function setCodProd(ProdottoId $codProd): void {
         $this->codProd = $codProd;
     }
 
-    public function getQtaRiordino(): Quantita {
+    public function getQtaRiordino(): QuantitaRiordino {
         return $this->qtaRiordino;
     }
 
-    public function setQtaRiordino(Quantita $qtaRiordino): void {
+    public function setQtaRiordino(QuantitaRiordino $qtaRiordino): void {
         $this->qtaRiordino = $qtaRiordino;
     }
 
-    public function getCodCat(): ?ID {
+    public function getCodCat(): ?CategoriaId {
         return $this->codCat;
     }
 
-    public function setCodCat(?ID $codCat): void {
+    public function setCodCat(?CategoriaId $codCat): void {
         $this->codCat = $codCat;
     }
 
-    public function getCodReg(): ?ID {
+    public function getCodReg(): ?CodificaRegId {
         return $this->codReg;
     }
 
-    public function setCodReg(?ID $codReg): void {
+    public function setCodReg(?CodificaRegId $codReg): void {
         $this->codReg = $codReg;
     }
 
-    public function getCodOE(): ?ID {
+    public function getCodOE(): ?CodificaOEId {
         return $this->codOE;
     }
 
-    public function setCodOE(?ID $codOE): void {
+    public function setCodOE(?CodificaOEId $codOE): void {
         $this->codOE = $codOE;
     }
 
     public function necessitaRiordino(int $giacenzaTotale): bool {
-        return $giacenzaTotale < $this->qtaRiordino->getValore();
+        return $giacenzaTotale < $this->qtaRiordino->value;
     }
 }

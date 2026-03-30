@@ -1,50 +1,49 @@
 <?php declare(strict_types=1);
 namespace src\Domain\Models;
-use src\Domain\ValuesObject\ID;
+use src\Domain\ValueObjects\CodificaOE\CodificaOEId;
+use src\Domain\ValueObjects\CodificaOE\CodificaOEDescrizione;
+use src\Domain\ValueObjects\Fornitore\FornitoreId;
 /**
  * Class CodificaOE
  *
  * @package src\Domain\Models
- * @property ID $codOE
- * @property string $descrizione
- * @property ?ID $ragSoc
  */
 class CodificaOE {
-    private ID $codOE;
-    private string $descrizione;
-    private ?ID $ragSoc;
+    private CodificaOEId $codOE;
+    private CodificaOEDescrizione $descrizione;
+    private ?FornitoreId $ragSoc;
 
-    public function __construct(ID $codOE, string $descrizione, ?ID $ragSoc = null) {
+    public function __construct(CodificaOEId $codOE, CodificaOEDescrizione $descrizione, ?FornitoreId $ragSoc = null) {
         $this->codOE = $codOE;
         $this->descrizione = $descrizione;
         $this->ragSoc = $ragSoc;
     }
 
-    public static function reconstituteFromDatabase(ID $codOE, string $descrizione, ?ID $ragSoc): self {
+    public static function reconstituteFromDatabase(CodificaOEId $codOE, CodificaOEDescrizione $descrizione, ?FornitoreId $ragSoc): self {
         return new self($codOE, $descrizione, $ragSoc);
     }
 
-    public function getCodOE(): ID {
+    public function getCodOE(): CodificaOEId {
         return $this->codOE;
     }
 
-    public function setCodOE(ID $codOE): void {
+    public function setCodOE(CodificaOEId $codOE): void {
         $this->codOE = $codOE;
     }
 
-    public function getDescrizione(): string {
+    public function getDescrizione(): CodificaOEDescrizione {
         return $this->descrizione;
     }
 
-    public function setDescrizione(string $descrizione): void {
+    public function setDescrizione(CodificaOEDescrizione $descrizione): void {
         $this->descrizione = $descrizione;
     }
 
-    public function getRagSoc(): ?ID {
+    public function getRagSoc(): ?FornitoreId {
         return $this->ragSoc;
     }
 
-    public function setRagSoc(?ID $ragSoc): void {
+    public function setRagSoc(?FornitoreId $ragSoc): void {
         $this->ragSoc = $ragSoc;
     }
 }

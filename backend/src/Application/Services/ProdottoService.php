@@ -4,26 +4,34 @@ namespace src\Application\Services;
 use src\Domain\Models\Prodotto;
 use src\Domain\Models\AttrProd;
 use src\Domain\Models\PosProd;
-use src\Domain\ValuesObject\ID;
-use src\Domain\ValuesObject\Quantita;
-use src\Application\Interfaces\IProdottoService;
+use src\Domain\ValueObjects\Prodotto\ProdottoId;
+use src\Domain\ValueObjects\Prodotto\QuantitaRiordino;
+use src\Domain\ValueObjects\Categoria\CategoriaId;
+use src\Domain\ValueObjects\CodificaReg\CodificaRegId;
+use src\Domain\ValueObjects\CodificaOE\CodificaOEId;
+use src\Domain\ValueObjects\Armadio\ArmadioId;
+use src\Domain\ValueObjects\Posizione\ScaffaleId;
+use src\Domain\ValueObjects\Attributo\AttributoId;
+use src\Domain\ValueObjects\AttrProd\ValoreAttributo;
+use src\Domain\ValueObjects\PosProd\Quantita;
+use src\Application\Interfaces\IServices\IProdottoService;
 use src\Application\DTO\ProdottoDTO;
 use src\Application\DTO\AttrProdDTO;
 use src\Application\DTO\ScaricoProdottoResultDTO;
-use src\Infrastructure\Repositories\ProdottoRepository;
-use src\Infrastructure\Repositories\ArmadioRepository;
-use src\Infrastructure\Repositories\GiacenzaRepository;
+use src\Application\Interfaces\IRepositories\IProdottoRepository;
+use src\Application\Interfaces\IRepositories\IArmadioRepository;
+use src\Application\Interfaces\IRepositories\IGiacenzaRepository;
 
 class ProdottoService implements IProdottoService {
 
-    private ProdottoRepository $prodottoRepository;
-    private ArmadioRepository $armadioRepository;
-    private GiacenzaRepository $giacenzaRepository;
+    private IProdottoRepository $prodottoRepository;
+    private IArmadioRepository $armadioRepository;
+    private IGiacenzaRepository $giacenzaRepository;
 
     public function __construct(
-        ProdottoRepository $prodottoRepository,
-        ArmadioRepository $armadioRepository,
-        GiacenzaRepository $giacenzaRepository
+        IProdottoRepository $prodottoRepository,
+        IArmadioRepository $armadioRepository,
+        IGiacenzaRepository $giacenzaRepository
     ) {
         $this->prodottoRepository = $prodottoRepository;
         $this->armadioRepository = $armadioRepository;
@@ -33,7 +41,7 @@ class ProdottoService implements IProdottoService {
     private function toDTO(Prodotto $prodotto, ?int $giacenzaTotale = null): ProdottoDTO {
         return new ProdottoDTO(
             (string) $prodotto->getCodProd(),
-            $prodotto->getQtaRiordino()->getValore(),
+            $prodotto->getQtaRiordino()->value,
             $prodotto->getCodCat() !== null ? (string) $prodotto->getCodCat() : null,
             $prodotto->getCodReg() !== null ? (string) $prodotto->getCodReg() : null,
             $prodotto->getCodOE() !== null ? (string) $prodotto->getCodOE() : null,
@@ -45,7 +53,7 @@ class ProdottoService implements IProdottoService {
         return new AttrProdDTO(
             (string) $attrProd->getCodProd(),
             (string) $attrProd->getCodAttr(),
-            $attrProd->getValore()
+            $attrProd->getValore()?->value
         );
     }
 
@@ -57,51 +65,51 @@ class ProdottoService implements IProdottoService {
     }
 
     public function getByCod(string $codProd): ?ProdottoDTO {
-        $prodotto = $this->prodottoRepository->findByCod(new ID($codProd));
+        $prodotto = $this->prodottoRepository->findByCod(new ProdottoId($codProd));
         return $prodotto !== null ? $this->toDTO($prodotto) : null;
     }
 
     /** @return ProdottoDTO[] */
     public function getByCategoria(string $codCat): array {
-        return array_map(fn(Prodotto $p) => $this->toDTO($p), $this->prodottoRepository->findByCategoria(new ID($codCat)));
+        return array_map(fn(Prodotto $p) => $this->toDTO($p), $this->prodottoRepository->findByCategoria(new CategoriaId($codCat)));
     }
 
     public function crea(string $codProd, int $qtaRiordino = 0, ?string $codCat = null, ?string $codReg = null, ?string $codOE = null): void {
-        if ($this->prodottoRepository->findByCod(new ID($codProd)) !== null) {
+        if ($this->prodottoRepository->findByCod(new ProdottoId($codProd)) !== null) {
             throw new \RuntimeException("Prodotto '{$codProd}' già esistente.");
         }
         $prodotto = new Prodotto(
-            new ID($codProd),
-            new Quantita($qtaRiordino),
-            $codCat !== null ? new ID($codCat) : null,
-            $codReg !== null ? new ID($codReg) : null,
-            $codOE !== null ? new ID($codOE) : null
+            new ProdottoId($codProd),
+            new QuantitaRiordino($qtaRiordino),
+            $codCat !== null ? new CategoriaId($codCat) : null,
+            $codReg !== null ? new CodificaRegId($codReg) : null,
+            $codOE !== null ? new CodificaOEId($codOE) : null
         );
         $this->prodottoRepository->save($prodotto);
     }
 
     public function aggiorna(string $codProd, int $qtaRiordino, ?string $codCat = null, ?string $codReg = null, ?string $codOE = null): void {
-        $prodotto = $this->prodottoRepository->findByCod(new ID($codProd));
+        $prodotto = $this->prodottoRepository->findByCod(new ProdottoId($codProd));
         if ($prodotto === null) {
             throw new \RuntimeException("Prodotto '{$codProd}' non trovato.");
         }
-        $prodotto->setQtaRiordino(new Quantita($qtaRiordino));
-        $prodotto->setCodCat($codCat !== null ? new ID($codCat) : null);
-        $prodotto->setCodReg($codReg !== null ? new ID($codReg) : null);
-        $prodotto->setCodOE($codOE !== null ? new ID($codOE) : null);
+        $prodotto->setQtaRiordino(new QuantitaRiordino($qtaRiordino));
+        $prodotto->setCodCat($codCat !== null ? new CategoriaId($codCat) : null);
+        $prodotto->setCodReg($codReg !== null ? new CodificaRegId($codReg) : null);
+        $prodotto->setCodOE($codOE !== null ? new CodificaOEId($codOE) : null);
         $this->prodottoRepository->save($prodotto);
     }
 
     public function elimina(string $codProd): void {
-        if ($this->prodottoRepository->findByCod(new ID($codProd)) === null) {
+        if ($this->prodottoRepository->findByCod(new ProdottoId($codProd)) === null) {
             throw new \RuntimeException("Prodotto '{$codProd}' non trovato.");
         }
-        $this->prodottoRepository->delete(new ID($codProd));
+        $this->prodottoRepository->delete(new ProdottoId($codProd));
     }
 
     /** @return AttrProdDTO[] */
     public function getAttributi(string $codProd): array {
-        return array_map(fn(AttrProd $a) => $this->attrProdToDTO($a), $this->prodottoRepository->getAttributi(new ID($codProd)));
+        return array_map(fn(AttrProd $a) => $this->attrProdToDTO($a), $this->prodottoRepository->getAttributi(new ProdottoId($codProd)));
     }
 
     // ── Carico Prodotto ──
@@ -114,33 +122,33 @@ class ProdottoService implements IProdottoService {
             throw new \InvalidArgumentException("La quantità deve essere maggiore di zero.");
         }
 
-        $prodotto = $this->prodottoRepository->findByCod(new ID($codProd));
+        $prodotto = $this->prodottoRepository->findByCod(new ProdottoId($codProd));
         if ($prodotto === null) {
             throw new \RuntimeException("Prodotto '{$codProd}' non trovato.");
         }
 
-        $posizione = $this->armadioRepository->findPosizione(new ID($codArmadio), new ID($codScaffale));
+        $posizione = $this->armadioRepository->findPosizione(new ArmadioId($codArmadio), new ScaffaleId($codScaffale));
         if ($posizione === null) {
             throw new \RuntimeException("Posizione '{$codArmadio}/{$codScaffale}' non trovata.");
         }
 
-        $giacenza = $this->giacenzaRepository->find(new ID($codProd), new ID($codArmadio), new ID($codScaffale));
+        $giacenza = $this->giacenzaRepository->find(new ProdottoId($codProd), new ArmadioId($codArmadio), new ScaffaleId($codScaffale));
 
         if ($giacenza !== null) {
             $giacenza->setQta($giacenza->getQta()->aggiungi($qta));
             $this->giacenzaRepository->save($giacenza);
         } else {
             $nuovaGiacenza = new PosProd(
-                new ID($codProd),
-                new ID($codArmadio),
-                new ID($codScaffale),
+                new ProdottoId($codProd),
+                new ArmadioId($codArmadio),
+                new ScaffaleId($codScaffale),
                 new Quantita($qta)
             );
             $this->giacenzaRepository->save($nuovaGiacenza);
         }
 
         foreach ($attributi as $codAttr => $valore) {
-            $attrProd = new AttrProd(new ID($codProd), new ID($codAttr), $valore);
+            $attrProd = new AttrProd(new ProdottoId($codProd), new AttributoId($codAttr), $valore !== null ? new ValoreAttributo($valore) : null);
             $this->prodottoRepository->saveAttributo($attrProd);
         }
     }
@@ -152,28 +160,28 @@ class ProdottoService implements IProdottoService {
             throw new \InvalidArgumentException("La quantità deve essere maggiore di zero.");
         }
 
-        $prodotto = $this->prodottoRepository->findByCod(new ID($codProd));
+        $prodotto = $this->prodottoRepository->findByCod(new ProdottoId($codProd));
         if ($prodotto === null) {
             throw new \RuntimeException("Prodotto '{$codProd}' non trovato.");
         }
 
-        $giacenza = $this->giacenzaRepository->find(new ID($codProd), new ID($codArmadio), new ID($codScaffale));
+        $giacenza = $this->giacenzaRepository->find(new ProdottoId($codProd), new ArmadioId($codArmadio), new ScaffaleId($codScaffale));
         if ($giacenza === null) {
             throw new \RuntimeException("Nessuna giacenza trovata per '{$codProd}' nella posizione '{$codArmadio}/{$codScaffale}'.");
         }
 
         $nuovaQta = $giacenza->getQta()->sottrai($qta);
         if ($nuovaQta->isZero()) {
-            $this->giacenzaRepository->delete(new ID($codProd), new ID($codArmadio), new ID($codScaffale));
+            $this->giacenzaRepository->delete(new ProdottoId($codProd), new ArmadioId($codArmadio), new ScaffaleId($codScaffale));
         } else {
             $giacenza->setQta($nuovaQta);
             $this->giacenzaRepository->save($giacenza);
         }
 
-        $giacenzaTotale = $this->giacenzaRepository->giacenzaTotale(new ID($codProd));
+        $giacenzaTotale = $this->giacenzaRepository->giacenzaTotale(new ProdottoId($codProd));
         $sottoSoglia = $prodotto->necessitaRiordino($giacenzaTotale);
 
-        return new ScaricoProdottoResultDTO($sottoSoglia, $prodotto->getQtaRiordino()->getValore(), $giacenzaTotale);
+        return new ScaricoProdottoResultDTO($sottoSoglia, $prodotto->getQtaRiordino()->value, $giacenzaTotale);
     }
 
     // ── Ricerca Prodotto ──
