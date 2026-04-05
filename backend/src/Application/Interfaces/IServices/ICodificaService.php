@@ -13,11 +13,11 @@ interface ICodificaService {
 
     public function getRegByCod(string $codReg): ?CodificaRegDTO;
 
-    public function creaReg(string $codReg, string $descrizione): void;
+    public function createReg(string $codReg, string $descrizione): void;
 
-    public function aggiornaReg(string $codReg, string $descrizione): void;
+    public function updateReg(string $codReg, string $descrizione): void;
 
-    public function eliminaReg(string $codReg): void;
+    public function deleteReg(string $codReg): void;
 
     // ── Codifica OE ──
 
@@ -29,9 +29,9 @@ interface ICodificaService {
     /** @return CodificaOEDTO[] */
     public function getOEByFornitore(string $ragSoc): array;
 
-    public function creaOE(string $codOE, string $descrizione, ?string $ragSoc = null): void;
+    public function createOE(string $codOE, string $descrizione, ?string $ragSoc = null): void;
 
-    public function aggiornaOE(string $codOE, string $descrizione, ?string $ragSoc = null): void;
+    public function updateOE(string $codOE, string $descrizione, ?string $ragSoc = null): void;
 
-    public function eliminaOE(string $codOE): void;
+    public function deleteOE(string $codOE): void;
 }

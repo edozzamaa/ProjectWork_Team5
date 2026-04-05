@@ -53,7 +53,7 @@ class AttributoService implements IAttributoService {
         return $attributo !== null ? $this->toDTO($attributo) : null;
     }
 
-    public function crea(string $codAttr, string $nome): void {
+    public function createAttributo(string $codAttr, string $nome): void {
         if ($this->attributoRepository->findByCod(new AttributoId($codAttr)) !== null) {
             throw new \RuntimeException("Attributo '{$codAttr}' già esistente.");
         }
@@ -61,7 +61,7 @@ class AttributoService implements IAttributoService {
         $this->attributoRepository->save($attributo);
     }
 
-    public function aggiorna(string $codAttr, string $nome): void {
+    public function updateAttributo(string $codAttr, string $nome): void {
         $attributo = $this->attributoRepository->findByCod(new AttributoId($codAttr));
         if ($attributo === null) {
             throw new \RuntimeException("Attributo '{$codAttr}' non trovato.");
@@ -70,7 +70,7 @@ class AttributoService implements IAttributoService {
         $this->attributoRepository->save($attributo);
     }
 
-    public function elimina(string $codAttr): void {
+    public function deleteAttributo(string $codAttr): void {
         if ($this->attributoRepository->findByCod(new AttributoId($codAttr)) === null) {
             throw new \RuntimeException("Attributo '{$codAttr}' non trovato.");
         }
@@ -79,7 +79,7 @@ class AttributoService implements IAttributoService {
 
     // ── Assegnazione Attributi a Prodotto ──
 
-    public function assegnaAProdotto(string $codProd, string $codAttr, ?string $valore = null): void {
+    public function assignToProdotto(string $codProd, string $codAttr, ?string $valore = null): void {
         if ($this->prodottoRepository->findByCod(new ProdottoId($codProd)) === null) {
             throw new \RuntimeException("Prodotto '{$codProd}' non trovato.");
         }
@@ -90,7 +90,7 @@ class AttributoService implements IAttributoService {
         $this->prodottoRepository->saveAttributo($attrProd);
     }
 
-    public function rimuoviDaProdotto(string $codProd, string $codAttr): void {
+    public function removeFromProdotto(string $codProd, string $codAttr): void {
         $this->prodottoRepository->deleteAttributo(new ProdottoId($codProd), new AttributoId($codAttr));
     }
 

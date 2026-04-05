@@ -63,18 +63,33 @@ class FornitoreRepository implements IFornitoreRepository {
         $indirizzo = $fornitore->getIndirizzo()?->value;
         $email = $fornitore->getEmail() !== null ? $fornitore->getEmail()->value : null;
 
-        $existing = $this->findByRagSoc($fornitore->getRagSoc());
+        $query = $this->queryBuilder->insertPrepared('FORNITORE', ['ragSoc', 'partIVA', 'telefono', 'indirizzo', 'email']);
+        $stmt = $connection->prepare($query);
+        $stmt->bind_param('sssss', $ragSoc, $partIVA, $telefono, $indirizzo, $email);
+        $stmt->execute();
+    }
 
-        if ($existing !== null) {
-            $query = $this->queryBuilder->updatePrepared('FORNITORE', ['partIVA', 'telefono', 'indirizzo', 'email'], 'ragSoc = ?');
-            $stmt = $connection->prepare($query);
-            $stmt->bind_param('sssss', $partIVA, $telefono, $indirizzo, $email, $ragSoc);
-        } else {
-            $query = $this->queryBuilder->insertPrepared('FORNITORE', ['ragSoc', 'partIVA', 'telefono', 'indirizzo', 'email']);
-            $stmt = $connection->prepare($query);
-            $stmt->bind_param('sssss', $ragSoc, $partIVA, $telefono, $indirizzo, $email);
+    public function update(Fornitore $fornitore, array $columns): void {
+        $connection = $this->databaseConnector->getConnection();
+        $ragSoc = (string) $fornitore->getRagSoc();
+
+        $valueMap = [
+            'partIVA' => $fornitore->getPartIVA() !== null ? (string) $fornitore->getPartIVA() : null,
+            'telefono' => $fornitore->getTelefono() !== null ? (string) $fornitore->getTelefono() : null,
+            'indirizzo' => $fornitore->getIndirizzo()?->value,
+            'email' => $fornitore->getEmail() !== null ? $fornitore->getEmail()->value : null,
+        ];
+
+        $types = str_repeat('s', count($columns)) . 's';
+        $values = [];
+        foreach ($columns as $col) {
+            $values[] = $valueMap[$col];
         }
+        $values[] = $ragSoc;
 
+        $query = $this->queryBuilder->updatePrepared('FORNITORE', $columns, 'ragSoc = ?');
+        $stmt = $connection->prepare($query);
+        $stmt->bind_param($types, ...$values);
         $stmt->execute();
     }
 

@@ -19,6 +19,9 @@ interface IProdottoRepository {
 
     public function save(Prodotto $prodotto): void;
 
+    /** @param string[] $columns */
+    public function update(Prodotto $prodotto, array $columns): void;
+
     public function delete(ProdottoId $codProd): void;
 
     /** @return AttrProd[] */

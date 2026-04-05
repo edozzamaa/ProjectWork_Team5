@@ -54,7 +54,7 @@ class CodificaService implements ICodificaService {
         return $codifica !== null ? $this->regToDTO($codifica) : null;
     }
 
-    public function creaReg(string $codReg, string $descrizione): void {
+    public function createReg(string $codReg, string $descrizione): void {
         if ($this->codificaRegRepository->findByCod(new CodificaRegId($codReg)) !== null) {
             throw new \RuntimeException("Codifica regionale '{$codReg}' già esistente.");
         }
@@ -62,7 +62,7 @@ class CodificaService implements ICodificaService {
         $this->codificaRegRepository->save($codifica);
     }
 
-    public function aggiornaReg(string $codReg, string $descrizione): void {
+    public function updateReg(string $codReg, string $descrizione): void {
         $codifica = $this->codificaRegRepository->findByCod(new CodificaRegId($codReg));
         if ($codifica === null) {
             throw new \RuntimeException("Codifica regionale '{$codReg}' non trovata.");
@@ -71,7 +71,7 @@ class CodificaService implements ICodificaService {
         $this->codificaRegRepository->save($codifica);
     }
 
-    public function eliminaReg(string $codReg): void {
+    public function deleteReg(string $codReg): void {
         if ($this->codificaRegRepository->findByCod(new CodificaRegId($codReg)) === null) {
             throw new \RuntimeException("Codifica regionale '{$codReg}' non trovata.");
         }
@@ -95,7 +95,7 @@ class CodificaService implements ICodificaService {
         return array_map(fn(CodificaOE $c) => $this->oeToDTO($c), $this->codificaOERepository->findByFornitore(new FornitoreId($ragSoc)));
     }
 
-    public function creaOE(string $codOE, string $descrizione, ?string $ragSoc = null): void {
+    public function createOE(string $codOE, string $descrizione, ?string $ragSoc = null): void {
         if ($this->codificaOERepository->findByCod(new CodificaOEId($codOE)) !== null) {
             throw new \RuntimeException("Codifica OE '{$codOE}' già esistente.");
         }
@@ -107,7 +107,7 @@ class CodificaService implements ICodificaService {
         $this->codificaOERepository->save($codifica);
     }
 
-    public function aggiornaOE(string $codOE, string $descrizione, ?string $ragSoc = null): void {
+    public function updateOE(string $codOE, string $descrizione, ?string $ragSoc = null): void {
         $codifica = $this->codificaOERepository->findByCod(new CodificaOEId($codOE));
         if ($codifica === null) {
             throw new \RuntimeException("Codifica OE '{$codOE}' non trovata.");
@@ -117,7 +117,7 @@ class CodificaService implements ICodificaService {
         $this->codificaOERepository->save($codifica);
     }
 
-    public function eliminaOE(string $codOE): void {
+    public function deleteOE(string $codOE): void {
         if ($this->codificaOERepository->findByCod(new CodificaOEId($codOE)) === null) {
             throw new \RuntimeException("Codifica OE '{$codOE}' non trovata.");
         }

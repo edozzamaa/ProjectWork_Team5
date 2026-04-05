@@ -10,9 +10,10 @@ interface IFornitoreService {
 
     public function getByRagSoc(string $ragSoc): ?FornitoreDTO;
 
-    public function crea(string $ragSoc, ?string $partIVA = null, ?string $telefono = null, ?string $indirizzo = null, ?string $email = null): void;
+    public function createFornitore(string $ragSoc, ?string $partIVA = null, ?string $telefono = null, ?string $indirizzo = null, ?string $email = null): void;
 
-    public function aggiorna(string $ragSoc, ?string $partIVA = null, ?string $telefono = null, ?string $indirizzo = null, ?string $email = null): void;
+    /** @param array<string, mixed> $fields */
+    public function updateFornitore(string $ragSoc, array $fields): void;
 
-    public function elimina(string $ragSoc): void;
+    public function deleteFornitore(string $ragSoc): void;
 }

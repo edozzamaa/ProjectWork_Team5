@@ -33,7 +33,7 @@ class CategoriaService implements ICategoriaService {
         return $categoria !== null ? $this->toDTO($categoria) : null;
     }
 
-    public function crea(string $codCat, string $tipo): void {
+    public function createCategoria(string $codCat, string $tipo): void {
         if ($this->categoriaRepository->findByCod(new CategoriaId($codCat)) !== null) {
             throw new \RuntimeException("Categoria '{$codCat}' già esistente.");
         }
@@ -41,7 +41,7 @@ class CategoriaService implements ICategoriaService {
         $this->categoriaRepository->save($categoria);
     }
 
-    public function aggiorna(string $codCat, string $tipo): void {
+    public function updateCategoria(string $codCat, string $tipo): void {
         $categoria = $this->categoriaRepository->findByCod(new CategoriaId($codCat));
         if ($categoria === null) {
             throw new \RuntimeException("Categoria '{$codCat}' non trovata.");
@@ -50,7 +50,7 @@ class CategoriaService implements ICategoriaService {
         $this->categoriaRepository->save($categoria);
     }
 
-    public function elimina(string $codCat): void {
+    public function deleteCategoria(string $codCat): void {
         if ($this->categoriaRepository->findByCod(new CategoriaId($codCat)) === null) {
             throw new \RuntimeException("Categoria '{$codCat}' non trovata.");
         }

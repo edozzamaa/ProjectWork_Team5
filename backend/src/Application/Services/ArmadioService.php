@@ -47,7 +47,7 @@ class ArmadioService implements IArmadioService {
         return $armadio !== null ? $this->armadioToDTO($armadio) : null;
     }
 
-    public function creaArmadio(string $codArmadio, ?string $descrizione = null): void {
+    public function createArmadio(string $codArmadio, ?string $descrizione = null): void {
         if ($this->armadioRepository->findArmadio(new ArmadioId($codArmadio)) !== null) {
             throw new \RuntimeException("Armadio '{$codArmadio}' già esistente.");
         }
@@ -55,7 +55,7 @@ class ArmadioService implements IArmadioService {
         $this->armadioRepository->saveArmadio($armadio);
     }
 
-    public function aggiornaArmadio(string $codArmadio, ?string $descrizione): void {
+    public function updateArmadio(string $codArmadio, ?string $descrizione): void {
         $armadio = $this->armadioRepository->findArmadio(new ArmadioId($codArmadio));
         if ($armadio === null) {
             throw new \RuntimeException("Armadio '{$codArmadio}' non trovato.");
@@ -64,7 +64,7 @@ class ArmadioService implements IArmadioService {
         $this->armadioRepository->saveArmadio($armadio);
     }
 
-    public function eliminaArmadio(string $codArmadio): void {
+    public function deleteArmadio(string $codArmadio): void {
         if ($this->armadioRepository->findArmadio(new ArmadioId($codArmadio)) === null) {
             throw new \RuntimeException("Armadio '{$codArmadio}' non trovato.");
         }
@@ -83,7 +83,7 @@ class ArmadioService implements IArmadioService {
         return $posizione !== null ? $this->posizioneToDTO($posizione) : null;
     }
 
-    public function creaPosizione(string $codArmadio, string $codScaffale, ?string $descrizione = null): void {
+    public function createPosizione(string $codArmadio, string $codScaffale, ?string $descrizione = null): void {
         if ($this->armadioRepository->findArmadio(new ArmadioId($codArmadio)) === null) {
             throw new \RuntimeException("Armadio '{$codArmadio}' non trovato.");
         }
@@ -94,7 +94,7 @@ class ArmadioService implements IArmadioService {
         $this->armadioRepository->savePosizione($posizione);
     }
 
-    public function aggiornaPosizione(string $codArmadio, string $codScaffale, ?string $descrizione): void {
+    public function updatePosizione(string $codArmadio, string $codScaffale, ?string $descrizione): void {
         $posizione = $this->armadioRepository->findPosizione(new ArmadioId($codArmadio), new ScaffaleId($codScaffale));
         if ($posizione === null) {
             throw new \RuntimeException("Posizione '{$codArmadio}/{$codScaffale}' non trovata.");
@@ -103,7 +103,7 @@ class ArmadioService implements IArmadioService {
         $this->armadioRepository->savePosizione($posizione);
     }
 
-    public function eliminaPosizione(string $codArmadio, string $codScaffale): void {
+    public function deletePosizione(string $codArmadio, string $codScaffale): void {
         if ($this->armadioRepository->findPosizione(new ArmadioId($codArmadio), new ScaffaleId($codScaffale)) === null) {
             throw new \RuntimeException("Posizione '{$codArmadio}/{$codScaffale}' non trovata.");
         }

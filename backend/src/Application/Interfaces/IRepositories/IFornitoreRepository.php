@@ -13,5 +13,8 @@ interface IFornitoreRepository {
 
     public function save(Fornitore $fornitore): void;
 
+    /** @param string[] $columns */
+    public function update(Fornitore $fornitore, array $columns): void;
+
     public function delete(FornitoreId $ragSoc): void;
 }

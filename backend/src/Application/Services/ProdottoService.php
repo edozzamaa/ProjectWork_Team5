@@ -74,7 +74,7 @@ class ProdottoService implements IProdottoService {
         return array_map(fn(Prodotto $p) => $this->toDTO($p), $this->prodottoRepository->findByCategoria(new CategoriaId($codCat)));
     }
 
-    public function crea(string $codProd, int $qtaRiordino = 0, ?string $codCat = null, ?string $codReg = null, ?string $codOE = null): void {
+    public function createProdotto(string $codProd, int $qtaRiordino = 0, ?string $codCat = null, ?string $codReg = null, ?string $codOE = null): void {
         if ($this->prodottoRepository->findByCod(new ProdottoId($codProd)) !== null) {
             throw new \RuntimeException("Prodotto '{$codProd}' già esistente.");
         }
@@ -88,19 +88,27 @@ class ProdottoService implements IProdottoService {
         $this->prodottoRepository->save($prodotto);
     }
 
-    public function aggiorna(string $codProd, int $qtaRiordino, ?string $codCat = null, ?string $codReg = null, ?string $codOE = null): void {
+    public function updateProdotto(string $codProd, array $fields): void {
         $prodotto = $this->prodottoRepository->findByCod(new ProdottoId($codProd));
         if ($prodotto === null) {
             throw new \RuntimeException("Prodotto '{$codProd}' non trovato.");
         }
-        $prodotto->setQtaRiordino(new QuantitaRiordino($qtaRiordino));
-        $prodotto->setCodCat($codCat !== null ? new CategoriaId($codCat) : null);
-        $prodotto->setCodReg($codReg !== null ? new CodificaRegId($codReg) : null);
-        $prodotto->setCodOE($codOE !== null ? new CodificaOEId($codOE) : null);
-        $this->prodottoRepository->save($prodotto);
+        if (array_key_exists('qtaRiordino', $fields)) {
+            $prodotto->setQtaRiordino(new QuantitaRiordino((int) $fields['qtaRiordino']));
+        }
+        if (array_key_exists('codCat', $fields)) {
+            $prodotto->setCodCat($fields['codCat'] !== null ? new CategoriaId($fields['codCat']) : null);
+        }
+        if (array_key_exists('codReg', $fields)) {
+            $prodotto->setCodReg($fields['codReg'] !== null ? new CodificaRegId($fields['codReg']) : null);
+        }
+        if (array_key_exists('codOE', $fields)) {
+            $prodotto->setCodOE($fields['codOE'] !== null ? new CodificaOEId($fields['codOE']) : null);
+        }
+        $this->prodottoRepository->update($prodotto, array_keys($fields));
     }
 
-    public function elimina(string $codProd): void {
+    public function deleteProdotto(string $codProd): void {
         if ($this->prodottoRepository->findByCod(new ProdottoId($codProd)) === null) {
             throw new \RuntimeException("Prodotto '{$codProd}' non trovato.");
         }
@@ -117,7 +125,7 @@ class ProdottoService implements IProdottoService {
     /**
      * @param array<string, string> $attributi
      */
-    public function carico(string $codProd, string $codArmadio, string $codScaffale, int $qta, array $attributi = []): void {
+    public function loadProdotto(string $codProd, string $codArmadio, string $codScaffale, int $qta, array $attributi = []): void {
         if ($qta <= 0) {
             throw new \InvalidArgumentException("La quantità deve essere maggiore di zero.");
         }
@@ -155,7 +163,7 @@ class ProdottoService implements IProdottoService {
 
     // ── Scarico Prodotto ──
 
-    public function scarico(string $codProd, string $codArmadio, string $codScaffale, int $qta): ScaricoProdottoResultDTO {
+    public function unloadProdotto(string $codProd, string $codArmadio, string $codScaffale, int $qta): ScaricoProdottoResultDTO {
         if ($qta <= 0) {
             throw new \InvalidArgumentException("La quantità deve essere maggiore di zero.");
         }
@@ -187,7 +195,7 @@ class ProdottoService implements IProdottoService {
     // ── Ricerca Prodotto ──
 
     /** @return ProdottoDTO[] */
-    public function cercaConGiacenza(): array {
+    public function searchWithStock(): array {
         $prodotti = $this->prodottoRepository->findAll();
         $risultati = [];
 

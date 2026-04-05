@@ -86,18 +86,35 @@ class ProdottoRepository implements IProdottoRepository {
         $codReg = $prodotto->getCodReg() !== null ? (string) $prodotto->getCodReg() : null;
         $codOE = $prodotto->getCodOE() !== null ? (string) $prodotto->getCodOE() : null;
 
-        $existing = $this->findByCod($prodotto->getCodProd());
+        $query = $this->queryBuilder->insertPrepared('PRODOTTO', ['codProd', 'qtaRiordino', 'codCat', 'codReg', 'codOE']);
+        $stmt = $connection->prepare($query);
+        $stmt->bind_param('sisss', $codProd, $qtaRiordino, $codCat, $codReg, $codOE);
+        $stmt->execute();
+    }
 
-        if ($existing !== null) {
-            $query = $this->queryBuilder->updatePrepared('PRODOTTO', ['qtaRiordino', 'codCat', 'codReg', 'codOE'], 'codProd = ?');
-            $stmt = $connection->prepare($query);
-            $stmt->bind_param('issss', $qtaRiordino, $codCat, $codReg, $codOE, $codProd);
-        } else {
-            $query = $this->queryBuilder->insertPrepared('PRODOTTO', ['codProd', 'qtaRiordino', 'codCat', 'codReg', 'codOE']);
-            $stmt = $connection->prepare($query);
-            $stmt->bind_param('sisss', $codProd, $qtaRiordino, $codCat, $codReg, $codOE);
+    public function update(Prodotto $prodotto, array $columns): void {
+        $connection = $this->databaseConnector->getConnection();
+        $codProd = (string) $prodotto->getCodProd();
+
+        $valueMap = [
+            'qtaRiordino' => $prodotto->getQtaRiordino()->value,
+            'codCat' => $prodotto->getCodCat() !== null ? (string) $prodotto->getCodCat() : null,
+            'codReg' => $prodotto->getCodReg() !== null ? (string) $prodotto->getCodReg() : null,
+            'codOE' => $prodotto->getCodOE() !== null ? (string) $prodotto->getCodOE() : null,
+        ];
+
+        $types = '';
+        $values = [];
+        foreach ($columns as $col) {
+            $types .= $col === 'qtaRiordino' ? 'i' : 's';
+            $values[] = $valueMap[$col];
         }
+        $types .= 's';
+        $values[] = $codProd;
 
+        $query = $this->queryBuilder->updatePrepared('PRODOTTO', $columns, 'codProd = ?');
+        $stmt = $connection->prepare($query);
+        $stmt->bind_param($types, ...$values);
         $stmt->execute();
     }
 
