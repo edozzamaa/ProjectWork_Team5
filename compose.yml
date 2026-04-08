@@ -6,7 +6,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "8081:80"
+      - "8081:80" #provvisoria
     command: >
       sh -c "[ -s /var/www/html/conf/composer.lock ] || rm -f /var/www/html/conf/composer.lock; composer install --working-dir=/var/www/html/conf --no-interaction --prefer-dist --no-progress && apache2-foreground"
     volumes:

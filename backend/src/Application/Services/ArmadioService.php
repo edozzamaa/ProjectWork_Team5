@@ -35,7 +35,7 @@ class ArmadioService implements IArmadioService {
         );
     }
 
-    // ── Armadio ──
+    // ── CRUD Armadio ──
 
     /** @return ArmadioDTO[] */
     public function getAllArmadi(): array {

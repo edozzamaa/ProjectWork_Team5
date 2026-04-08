@@ -171,6 +171,24 @@ class ProdottoRepository implements IProdottoRepository {
         return $attributi;
     }
 
+    /** @return AttrProd[] */
+    public function findAllAttributi(): array {
+        $connection = $this->databaseConnector->getConnection();
+        $query = $this->queryBuilder->select('codProd, codAttr, valore', 'ATTR_PROD');
+        $result = $connection->query($query);
+        $attributi = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $attributi[] = AttrProd::reconstituteFromDatabase(
+                new ProdottoId((string) $row['codProd']),
+                new AttributoId((string) $row['codAttr']),
+                $row['valore'] !== null ? new ValoreAttributo((string) $row['valore']) : null
+            );
+        }
+
+        return $attributi;
+    }
+
     public function saveAttributo(AttrProd $attrProd): void {
         $connection = $this->databaseConnector->getConnection();
         $codProd = (string) $attrProd->getCodProd();

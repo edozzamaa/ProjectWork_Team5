@@ -27,6 +27,9 @@ interface IProdottoRepository {
     /** @return AttrProd[] */
     public function getAttributi(ProdottoId $codProd): array;
 
+    /** @return AttrProd[] */
+    public function findAllAttributi(): array;
+
     public function saveAttributo(AttrProd $attrProd): void;
 
     public function deleteAttributo(ProdottoId $codProd, AttributoId $codAttr): void;

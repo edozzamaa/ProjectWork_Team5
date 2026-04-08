@@ -9,14 +9,18 @@ class ProdottoDTO {
     public readonly ?string $codReg;
     public readonly ?string $codOE;
     public readonly ?int $giacenzaTotale;
+    /** @var AttrProdDTO[] */
+    public readonly array $attributi;
 
+    /** @param AttrProdDTO[] $attributi */
     public function __construct(
         string $codProd,
         int $qtaRiordino,
         ?string $codCat = null,
         ?string $codReg = null,
         ?string $codOE = null,
-        ?int $giacenzaTotale = null
+        ?int $giacenzaTotale = null,
+        array $attributi = []
     ) {
         $this->codProd = $codProd;
         $this->qtaRiordino = $qtaRiordino;
@@ -24,5 +28,6 @@ class ProdottoDTO {
         $this->codReg = $codReg;
         $this->codOE = $codOE;
         $this->giacenzaTotale = $giacenzaTotale;
+        $this->attributi = $attributi;
     }
 }

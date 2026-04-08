@@ -38,14 +38,16 @@ class ProdottoService implements IProdottoService {
         $this->giacenzaRepository = $giacenzaRepository;
     }
 
-    private function toDTO(Prodotto $prodotto, ?int $giacenzaTotale = null): ProdottoDTO {
+    /** @param AttrProdDTO[] $attributi */
+    private function toDTO(Prodotto $prodotto, ?int $giacenzaTotale = null, array $attributi = []): ProdottoDTO {
         return new ProdottoDTO(
             (string) $prodotto->getCodProd(),
             $prodotto->getQtaRiordino()->value,
             $prodotto->getCodCat() !== null ? (string) $prodotto->getCodCat() : null,
             $prodotto->getCodReg() !== null ? (string) $prodotto->getCodReg() : null,
             $prodotto->getCodOE() !== null ? (string) $prodotto->getCodOE() : null,
-            $giacenzaTotale
+            $giacenzaTotale,
+            $attributi
         );
     }
 
@@ -57,21 +59,37 @@ class ProdottoService implements IProdottoService {
         );
     }
 
+    /** @return array<string, AttrProdDTO[]> */
+    private function groupAttributiByProdotto(array $attrList): array {
+        $map = [];
+        foreach ($attrList as $attr) {
+            $dto = $this->attrProdToDTO($attr);
+            $map[$dto->codProd][] = $dto;
+        }
+        return $map;
+    }
+
     // ── CRUD Prodotto ──
 
     /** @return ProdottoDTO[] */
     public function getAll(): array {
-        return array_map(fn(Prodotto $p) => $this->toDTO($p), $this->prodottoRepository->findAll());
+        $prodotti = $this->prodottoRepository->findAll();
+        $attrMap = $this->groupAttributiByProdotto($this->prodottoRepository->findAllAttributi());
+        return array_map(fn(Prodotto $p) => $this->toDTO($p, null, $attrMap[(string) $p->getCodProd()] ?? []), $prodotti);
     }
 
     public function getByCod(string $codProd): ?ProdottoDTO {
         $prodotto = $this->prodottoRepository->findByCod(new ProdottoId($codProd));
-        return $prodotto !== null ? $this->toDTO($prodotto) : null;
+        if ($prodotto === null) return null;
+        $attributi = array_map(fn($a) => $this->attrProdToDTO($a), $this->prodottoRepository->getAttributi(new ProdottoId($codProd)));
+        return $this->toDTO($prodotto, null, $attributi);
     }
 
     /** @return ProdottoDTO[] */
     public function getByCategoria(string $codCat): array {
-        return array_map(fn(Prodotto $p) => $this->toDTO($p), $this->prodottoRepository->findByCategoria(new CategoriaId($codCat)));
+        $prodotti = $this->prodottoRepository->findByCategoria(new CategoriaId($codCat));
+        $attrMap = $this->groupAttributiByProdotto($this->prodottoRepository->findAllAttributi());
+        return array_map(fn(Prodotto $p) => $this->toDTO($p, null, $attrMap[(string) $p->getCodProd()] ?? []), $prodotti);
     }
 
     public function createProdotto(string $codProd, int $qtaRiordino = 0, ?string $codCat = null, ?string $codReg = null, ?string $codOE = null): void {
