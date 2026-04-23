@@ -4,6 +4,10 @@ namespace src\Presentation\Controllers;
 
 use Exception;
 use src\Application\Interfaces\IServices\IFornitoreService;
+use src\Application\DTO\Input\GetFornitoreByRagSocInput;
+use src\Application\DTO\Input\CreateFornitoreInput;
+use src\Application\DTO\Input\UpdateFornitoreInput;
+use src\Application\DTO\Input\DeleteFornitoreInput;
 use src\Presentation\Response\IResponse;
 
 class FornitoreController {
@@ -24,7 +28,7 @@ class FornitoreController {
 
     public function getByRagSoc(string $ragSoc): void {
         try {
-            $fornitore = $this->service->getByRagSoc($ragSoc);
+            $fornitore = $this->service->getByRagSoc(new GetFornitoreByRagSocInput($ragSoc));
             if ($fornitore === null) {
                 $this->response->error('Fornitore non trovato.', 404);
             }
@@ -40,16 +44,16 @@ class FornitoreController {
             if (empty($data['ragSoc'])) {
                 $this->response->error('La ragione sociale è obbligatoria.', 400);
             }
-            $this->service->createFornitore(
+            $this->service->createFornitore(new CreateFornitoreInput(
                 $data['ragSoc'],
                 $data['partIVA'] ?? null,
                 $data['telefono'] ?? null,
                 $data['indirizzo'] ?? null,
                 $data['email'] ?? null
-            );
+            ));
             $this->response->success(['message' => 'Fornitore creato con successo.'], 201);
-        } catch (\InvalidArgumentException $e) {
-            $this->response->error($e->getMessage(), 409);
+        } catch (\src\Domain\Exceptions\DomainValidationException|\InvalidArgumentException $e) {
+            $this->response->error($e->getMessage(), 400);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
         }
@@ -63,7 +67,7 @@ class FornitoreController {
                 $this->response->error('Nessun campo da aggiornare.', 400);
                 return;
             }
-            $this->service->updateFornitore($ragSoc, $fields);
+            $this->service->updateFornitore(new UpdateFornitoreInput($ragSoc, $fields));
             $this->response->success(['message' => 'Fornitore aggiornato con successo.']);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -72,7 +76,7 @@ class FornitoreController {
 
     public function deleteFornitore(string $ragSoc): void {
         try {
-            $this->service->deleteFornitore($ragSoc);
+            $this->service->deleteFornitore(new DeleteFornitoreInput($ragSoc));
             $this->response->success(['message' => 'Fornitore eliminato con successo.']);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);

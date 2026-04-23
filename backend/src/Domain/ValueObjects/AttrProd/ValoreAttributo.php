@@ -2,14 +2,14 @@
 
 namespace src\Domain\ValueObjects\AttrProd;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\MaxLengthExceededException;
 
 final readonly class ValoreAttributo
 {
     public function __construct(public string $value)
     {
         if (mb_strlen($value) > 100) {
-            throw new InvalidArgumentException('Il valore attributo non può superare 100 caratteri.');
+            throw new MaxLengthExceededException('Il valore attributo non può superare 100 caratteri.');
         }
     }
 

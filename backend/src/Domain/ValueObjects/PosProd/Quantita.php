@@ -2,14 +2,14 @@
 
 namespace src\Domain\ValueObjects\PosProd;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\NegativeQuantityException;
 
 final readonly class Quantita
 {
     public function __construct(public int $value)
     {
         if ($value < 0) {
-            throw new InvalidArgumentException("La quantità non può essere negativa (valore: {$value}).");
+            throw new NegativeQuantityException("La quantità non può essere negativa (valore: {$value}).");
         }
     }
 

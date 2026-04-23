@@ -2,17 +2,18 @@
 
 namespace src\Domain\ValueObjects\Prodotto;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\MaxLengthExceededException;
+use src\Domain\Exceptions\RequiredValueException;
 
 final readonly class ProdottoId
 {
     public function __construct(public string $value)
     {
         if (strlen(trim($value)) === 0) {
-            throw new InvalidArgumentException('Il codice prodotto non può essere vuoto.');
+            throw new RequiredValueException('Il codice prodotto non può essere vuoto.');
         }
         if (mb_strlen($value) > 20) {
-            throw new InvalidArgumentException('Il codice prodotto non può superare 20 caratteri.');
+            throw new MaxLengthExceededException('Il codice prodotto non può superare 20 caratteri.');
         }
     }
 

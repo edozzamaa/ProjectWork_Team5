@@ -4,6 +4,15 @@ namespace src\Presentation\Controllers;
 
 use Exception;
 use src\Application\Interfaces\IServices\ICodificaService;
+use src\Application\DTO\Input\GetCodificaRegByCodInput;
+use src\Application\DTO\Input\CreateCodificaRegInput;
+use src\Application\DTO\Input\UpdateCodificaRegInput;
+use src\Application\DTO\Input\DeleteCodificaRegInput;
+use src\Application\DTO\Input\GetCodificaOEByCodInput;
+use src\Application\DTO\Input\GetCodificaOEByFornitoreInput;
+use src\Application\DTO\Input\CreateCodificaOEInput;
+use src\Application\DTO\Input\UpdateCodificaOEInput;
+use src\Application\DTO\Input\DeleteCodificaOEInput;
 use src\Presentation\Response\IResponse;
 
 class CodificaController {
@@ -24,7 +33,7 @@ class CodificaController {
 
     public function getRegByCod(string $codReg): void {
         try {
-            $codifica = $this->service->getRegByCod($codReg);
+            $codifica = $this->service->getRegByCod(new GetCodificaRegByCodInput($codReg));
             if ($codifica === null) {
                 $this->response->error('Codifica regionale non trovata.', 404);
             }
@@ -40,10 +49,10 @@ class CodificaController {
             if (empty($data['codReg']) || empty($data['descrizione'])) {
                 $this->response->error('Codice e descrizione sono obbligatori.', 400);
             }
-            $this->service->createReg($data['codReg'], $data['descrizione']);
+            $this->service->createReg(new CreateCodificaRegInput($data['codReg'], $data['descrizione']));
             $this->response->success(['message' => 'Codifica regionale creata con successo.'], 201);
-        } catch (\InvalidArgumentException $e) {
-            $this->response->error($e->getMessage(), 409);
+        } catch (\src\Domain\Exceptions\DomainValidationException|\InvalidArgumentException $e) {
+            $this->response->error($e->getMessage(), 400);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
         }
@@ -55,7 +64,7 @@ class CodificaController {
             if (empty($data['descrizione'])) {
                 $this->response->error('La descrizione è obbligatoria.', 400);
             }
-            $this->service->updateReg($codReg, $data['descrizione']);
+            $this->service->updateReg(new UpdateCodificaRegInput($codReg, $data['descrizione']));
             $this->response->success(['message' => 'Codifica regionale aggiornata con successo.']);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -64,7 +73,7 @@ class CodificaController {
 
     public function deleteReg(string $codReg): void {
         try {
-            $this->service->deleteReg($codReg);
+            $this->service->deleteReg(new DeleteCodificaRegInput($codReg));
             $this->response->success(['message' => 'Codifica regionale eliminata con successo.']);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -82,7 +91,7 @@ class CodificaController {
 
     public function getOEByCod(string $codOE): void {
         try {
-            $codifica = $this->service->getOEByCod($codOE);
+            $codifica = $this->service->getOEByCod(new GetCodificaOEByCodInput($codOE));
             if ($codifica === null) {
                 $this->response->error('Codifica OE non trovata.', 404);
             }
@@ -94,7 +103,7 @@ class CodificaController {
 
     public function getOEByFornitore(string $ragSoc): void {
         try {
-            $codifiche = $this->service->getOEByFornitore($ragSoc);
+            $codifiche = $this->service->getOEByFornitore(new GetCodificaOEByFornitoreInput($ragSoc));
             $this->response->success($codifiche);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -107,10 +116,10 @@ class CodificaController {
             if (empty($data['codOE']) || empty($data['descrizione'])) {
                 $this->response->error('Codice e descrizione sono obbligatori.', 400);
             }
-            $this->service->createOE($data['codOE'], $data['descrizione'], $data['ragSoc'] ?? null);
+            $this->service->createOE(new CreateCodificaOEInput($data['codOE'], $data['descrizione'], $data['ragSoc'] ?? null));
             $this->response->success(['message' => 'Codifica OE creata con successo.'], 201);
-        } catch (\InvalidArgumentException $e) {
-            $this->response->error($e->getMessage(), 409);
+        } catch (\src\Domain\Exceptions\DomainValidationException|\InvalidArgumentException $e) {
+            $this->response->error($e->getMessage(), 400);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
         }
@@ -122,7 +131,7 @@ class CodificaController {
             if (empty($data['descrizione'])) {
                 $this->response->error('La descrizione è obbligatoria.', 400);
             }
-            $this->service->updateOE($codOE, $data['descrizione'], $data['ragSoc'] ?? null);
+            $this->service->updateOE(new UpdateCodificaOEInput($codOE, $data['descrizione'], $data['ragSoc'] ?? null));
             $this->response->success(['message' => 'Codifica OE aggiornata con successo.']);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -131,7 +140,7 @@ class CodificaController {
 
     public function deleteOE(string $codOE): void {
         try {
-            $this->service->deleteOE($codOE);
+            $this->service->deleteOE(new DeleteCodificaOEInput($codOE));
             $this->response->success(['message' => 'Codifica OE eliminata con successo.']);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);

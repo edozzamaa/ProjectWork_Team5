@@ -2,17 +2,18 @@
 
 namespace src\Domain\ValueObjects\Attributo;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\MaxLengthExceededException;
+use src\Domain\Exceptions\RequiredValueException;
 
 final readonly class AttributoId
 {
     public function __construct(public string $value)
     {
         if (strlen(trim($value)) === 0) {
-            throw new InvalidArgumentException('Il codice attributo non può essere vuoto.');
+            throw new RequiredValueException('Il codice attributo non può essere vuoto.');
         }
         if (mb_strlen($value) > 10) {
-            throw new InvalidArgumentException('Il codice attributo non può superare 10 caratteri.');
+            throw new MaxLengthExceededException('Il codice attributo non può superare 10 caratteri.');
         }
     }
 

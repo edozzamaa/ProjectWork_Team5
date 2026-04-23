@@ -2,14 +2,14 @@
 
 namespace src\Domain\ValueObjects\CodificaOE;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\RequiredValueException;
 
 final readonly class CodificaOEDescrizione
 {
     public function __construct(public string $value)
     {
         if (strlen(trim($value)) === 0) {
-            throw new InvalidArgumentException('La descrizione codifica OE non può essere vuota.');
+            throw new RequiredValueException('La descrizione codifica OE non può essere vuota.');
         }
     }
 

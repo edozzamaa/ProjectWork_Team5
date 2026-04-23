@@ -2,14 +2,14 @@
 
 namespace src\Domain\ValueObjects\Posizione;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\MaxLengthExceededException;
 
 final readonly class PosizioneDescrizione
 {
     public function __construct(public string $value)
     {
         if (mb_strlen($value) > 500) {
-            throw new InvalidArgumentException('La descrizione posizione non può superare 500 caratteri.');
+            throw new MaxLengthExceededException('La descrizione posizione non può superare 500 caratteri.');
         }
     }
 

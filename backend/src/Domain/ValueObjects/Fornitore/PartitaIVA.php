@@ -2,7 +2,7 @@
 
 namespace src\Domain\ValueObjects\Fornitore;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\InvalidFormatException;
 
 final readonly class PartitaIVA
 {
@@ -12,7 +12,7 @@ final readonly class PartitaIVA
     {
         $cleaned = preg_replace('/\s+/', '', $value);
         if (!preg_match('/^\d{11}$/', $cleaned)) {
-            throw new InvalidArgumentException('Partita IVA non valida: deve essere composta da 11 cifre numeriche.');
+            throw new InvalidFormatException('Partita IVA non valida: deve essere composta da 11 cifre numeriche.');
         }
         $this->value = $cleaned;
     }

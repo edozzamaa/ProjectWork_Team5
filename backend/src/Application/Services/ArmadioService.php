@@ -10,6 +10,15 @@ use src\Domain\ValueObjects\Posizione\PosizioneDescrizione;
 use src\Application\Interfaces\IServices\IArmadioService;
 use src\Application\DTO\ArmadioDTO;
 use src\Application\DTO\PosizioneDTO;
+use src\Application\DTO\Input\GetArmadioInput;
+use src\Application\DTO\Input\CreateArmadioInput;
+use src\Application\DTO\Input\UpdateArmadioInput;
+use src\Application\DTO\Input\DeleteArmadioInput;
+use src\Application\DTO\Input\GetPosizioniByArmadioInput;
+use src\Application\DTO\Input\GetPosizioneInput;
+use src\Application\DTO\Input\CreatePosizioneInput;
+use src\Application\DTO\Input\UpdatePosizioneInput;
+use src\Application\DTO\Input\DeletePosizioneInput;
 use src\Application\Interfaces\IRepositories\IArmadioRepository;
 
 class ArmadioService implements IArmadioService {
@@ -42,71 +51,71 @@ class ArmadioService implements IArmadioService {
         return array_map(fn(Armadio $a) => $this->armadioToDTO($a), $this->armadioRepository->findAllArmadi());
     }
 
-    public function getArmadio(string $codArmadio): ?ArmadioDTO {
-        $armadio = $this->armadioRepository->findArmadio(new ArmadioId($codArmadio));
+    public function getArmadio(GetArmadioInput $input): ?ArmadioDTO {
+        $armadio = $this->armadioRepository->findArmadio(new ArmadioId($input->codArmadio));
         return $armadio !== null ? $this->armadioToDTO($armadio) : null;
     }
 
-    public function createArmadio(string $codArmadio, ?string $descrizione = null): void {
-        if ($this->armadioRepository->findArmadio(new ArmadioId($codArmadio)) !== null) {
-            throw new \RuntimeException("Armadio '{$codArmadio}' già esistente.");
+    public function createArmadio(CreateArmadioInput $input): void {
+        if ($this->armadioRepository->findArmadio(new ArmadioId($input->codArmadio)) !== null) {
+            throw new \RuntimeException("Armadio '{$input->codArmadio}' già esistente.");
         }
-        $armadio = new Armadio(new ArmadioId($codArmadio), $descrizione !== null ? new ArmadioDescrizione($descrizione) : null);
+        $armadio = new Armadio(new ArmadioId($input->codArmadio), $input->descrizione !== null ? new ArmadioDescrizione($input->descrizione) : null);
         $this->armadioRepository->saveArmadio($armadio);
     }
 
-    public function updateArmadio(string $codArmadio, ?string $descrizione): void {
-        $armadio = $this->armadioRepository->findArmadio(new ArmadioId($codArmadio));
+    public function updateArmadio(UpdateArmadioInput $input): void {
+        $armadio = $this->armadioRepository->findArmadio(new ArmadioId($input->codArmadio));
         if ($armadio === null) {
-            throw new \RuntimeException("Armadio '{$codArmadio}' non trovato.");
+            throw new \RuntimeException("Armadio '{$input->codArmadio}' non trovato.");
         }
-        $armadio->setDescrizione($descrizione !== null ? new ArmadioDescrizione($descrizione) : null);
+        $armadio->setDescrizione($input->descrizione !== null ? new ArmadioDescrizione($input->descrizione) : null);
         $this->armadioRepository->saveArmadio($armadio);
     }
 
-    public function deleteArmadio(string $codArmadio): void {
-        if ($this->armadioRepository->findArmadio(new ArmadioId($codArmadio)) === null) {
-            throw new \RuntimeException("Armadio '{$codArmadio}' non trovato.");
+    public function deleteArmadio(DeleteArmadioInput $input): void {
+        if ($this->armadioRepository->findArmadio(new ArmadioId($input->codArmadio)) === null) {
+            throw new \RuntimeException("Armadio '{$input->codArmadio}' non trovato.");
         }
-        $this->armadioRepository->deleteArmadio(new ArmadioId($codArmadio));
+        $this->armadioRepository->deleteArmadio(new ArmadioId($input->codArmadio));
     }
 
     // ── Posizione ──
 
     /** @return PosizioneDTO[] */
-    public function getPosizioniByArmadio(string $codArmadio): array {
-        return array_map(fn(Posizione $p) => $this->posizioneToDTO($p), $this->armadioRepository->findPosizioniByArmadio(new ArmadioId($codArmadio)));
+    public function getPosizioniByArmadio(GetPosizioniByArmadioInput $input): array {
+        return array_map(fn(Posizione $p) => $this->posizioneToDTO($p), $this->armadioRepository->findPosizioniByArmadio(new ArmadioId($input->codArmadio)));
     }
 
-    public function getPosizione(string $codArmadio, string $codScaffale): ?PosizioneDTO {
-        $posizione = $this->armadioRepository->findPosizione(new ArmadioId($codArmadio), new ScaffaleId($codScaffale));
+    public function getPosizione(GetPosizioneInput $input): ?PosizioneDTO {
+        $posizione = $this->armadioRepository->findPosizione(new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale));
         return $posizione !== null ? $this->posizioneToDTO($posizione) : null;
     }
 
-    public function createPosizione(string $codArmadio, string $codScaffale, ?string $descrizione = null): void {
-        if ($this->armadioRepository->findArmadio(new ArmadioId($codArmadio)) === null) {
-            throw new \RuntimeException("Armadio '{$codArmadio}' non trovato.");
+    public function createPosizione(CreatePosizioneInput $input): void {
+        if ($this->armadioRepository->findArmadio(new ArmadioId($input->codArmadio)) === null) {
+            throw new \RuntimeException("Armadio '{$input->codArmadio}' non trovato.");
         }
-        if ($this->armadioRepository->findPosizione(new ArmadioId($codArmadio), new ScaffaleId($codScaffale)) !== null) {
-            throw new \RuntimeException("Posizione '{$codArmadio}/{$codScaffale}' già esistente.");
+        if ($this->armadioRepository->findPosizione(new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale)) !== null) {
+            throw new \RuntimeException("Posizione '{$input->codArmadio}/{$input->codScaffale}' già esistente.");
         }
-        $posizione = new Posizione(new ArmadioId($codArmadio), new ScaffaleId($codScaffale), $descrizione !== null ? new PosizioneDescrizione($descrizione) : null);
+        $posizione = new Posizione(new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale), $input->descrizione !== null ? new PosizioneDescrizione($input->descrizione) : null);
         $this->armadioRepository->savePosizione($posizione);
     }
 
-    public function updatePosizione(string $codArmadio, string $codScaffale, ?string $descrizione): void {
-        $posizione = $this->armadioRepository->findPosizione(new ArmadioId($codArmadio), new ScaffaleId($codScaffale));
+    public function updatePosizione(UpdatePosizioneInput $input): void {
+        $posizione = $this->armadioRepository->findPosizione(new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale));
         if ($posizione === null) {
-            throw new \RuntimeException("Posizione '{$codArmadio}/{$codScaffale}' non trovata.");
+            throw new \RuntimeException("Posizione '{$input->codArmadio}/{$input->codScaffale}' non trovata.");
         }
-        $posizione->setDescrizione($descrizione !== null ? new PosizioneDescrizione($descrizione) : null);
+        $posizione->setDescrizione($input->descrizione !== null ? new PosizioneDescrizione($input->descrizione) : null);
         $this->armadioRepository->savePosizione($posizione);
     }
 
-    public function deletePosizione(string $codArmadio, string $codScaffale): void {
-        if ($this->armadioRepository->findPosizione(new ArmadioId($codArmadio), new ScaffaleId($codScaffale)) === null) {
-            throw new \RuntimeException("Posizione '{$codArmadio}/{$codScaffale}' non trovata.");
+    public function deletePosizione(DeletePosizioneInput $input): void {
+        if ($this->armadioRepository->findPosizione(new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale)) === null) {
+            throw new \RuntimeException("Posizione '{$input->codArmadio}/{$input->codScaffale}' non trovata.");
         }
-        $this->armadioRepository->deletePosizione(new ArmadioId($codArmadio), new ScaffaleId($codScaffale));
+        $this->armadioRepository->deletePosizione(new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale));
     }
 }

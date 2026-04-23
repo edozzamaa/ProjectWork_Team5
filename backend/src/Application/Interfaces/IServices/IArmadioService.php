@@ -3,28 +3,37 @@ namespace src\Application\Interfaces\IServices;
 
 use src\Application\DTO\ArmadioDTO;
 use src\Application\DTO\PosizioneDTO;
+use src\Application\DTO\Input\GetArmadioInput;
+use src\Application\DTO\Input\CreateArmadioInput;
+use src\Application\DTO\Input\UpdateArmadioInput;
+use src\Application\DTO\Input\DeleteArmadioInput;
+use src\Application\DTO\Input\GetPosizioniByArmadioInput;
+use src\Application\DTO\Input\GetPosizioneInput;
+use src\Application\DTO\Input\CreatePosizioneInput;
+use src\Application\DTO\Input\UpdatePosizioneInput;
+use src\Application\DTO\Input\DeletePosizioneInput;
 
 interface IArmadioService {
 
     /** @return ArmadioDTO[] */
     public function getAllArmadi(): array;
 
-    public function getArmadio(string $codArmadio): ?ArmadioDTO;
+    public function getArmadio(GetArmadioInput $input): ?ArmadioDTO;
 
-    public function createArmadio(string $codArmadio, ?string $descrizione = null): void;
+    public function createArmadio(CreateArmadioInput $input): void;
 
-    public function updateArmadio(string $codArmadio, ?string $descrizione): void;
+    public function updateArmadio(UpdateArmadioInput $input): void;
 
-    public function deleteArmadio(string $codArmadio): void;
+    public function deleteArmadio(DeleteArmadioInput $input): void;
 
     /** @return PosizioneDTO[] */
-    public function getPosizioniByArmadio(string $codArmadio): array;
+    public function getPosizioniByArmadio(GetPosizioniByArmadioInput $input): array;
 
-    public function getPosizione(string $codArmadio, string $codScaffale): ?PosizioneDTO;
+    public function getPosizione(GetPosizioneInput $input): ?PosizioneDTO;
 
-    public function createPosizione(string $codArmadio, string $codScaffale, ?string $descrizione = null): void;
+    public function createPosizione(CreatePosizioneInput $input): void;
 
-    public function updatePosizione(string $codArmadio, string $codScaffale, ?string $descrizione): void;
+    public function updatePosizione(UpdatePosizioneInput $input): void;
 
-    public function deletePosizione(string $codArmadio, string $codScaffale): void;
+    public function deletePosizione(DeletePosizioneInput $input): void;
 }

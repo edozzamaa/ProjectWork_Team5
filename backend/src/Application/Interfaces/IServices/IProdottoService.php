@@ -4,33 +4,37 @@ namespace src\Application\Interfaces\IServices;
 use src\Application\DTO\ProdottoDTO;
 use src\Application\DTO\AttrProdDTO;
 use src\Application\DTO\ScaricoProdottoResultDTO;
+use src\Application\DTO\Input\GetProdottoByCodInput;
+use src\Application\DTO\Input\GetProdottoByCategoriaInput;
+use src\Application\DTO\Input\CreateProdottoInput;
+use src\Application\DTO\Input\UpdateProdottoInput;
+use src\Application\DTO\Input\DeleteProdottoInput;
+use src\Application\DTO\Input\GetAttributiDiProdottoInput;
+use src\Application\DTO\Input\LoadProdottoInput;
+use src\Application\DTO\Input\UnloadProdottoInput;
 
 interface IProdottoService {
 
     /** @return ProdottoDTO[] */
     public function getAll(): array;
 
-    public function getByCod(string $codProd): ?ProdottoDTO;
+    public function getByCod(GetProdottoByCodInput $input): ?ProdottoDTO;
 
     /** @return ProdottoDTO[] */
-    public function getByCategoria(string $codCat): array;
+    public function getByCategoria(GetProdottoByCategoriaInput $input): array;
 
-    public function createProdotto(string $codProd, int $qtaRiordino = 0, ?string $codCat = null, ?string $codReg = null, ?string $codOE = null): void;
+    public function createProdotto(CreateProdottoInput $input): void;
 
-    /** @param array<string, mixed> $fields */
-    public function updateProdotto(string $codProd, array $fields): void;
+    public function updateProdotto(UpdateProdottoInput $input): void;
 
-    public function deleteProdotto(string $codProd): void;
+    public function deleteProdotto(DeleteProdottoInput $input): void;
 
     /** @return AttrProdDTO[] */
-    public function getAttributi(string $codProd): array;
+    public function getAttributi(GetAttributiDiProdottoInput $input): array;
 
-    /**
-     * @param array<string, string> $attributi
-     */
-    public function loadProdotto(string $codProd, string $codArmadio, string $codScaffale, int $qta, array $attributi = []): void;
+    public function loadProdotto(LoadProdottoInput $input): void;
 
-    public function unloadProdotto(string $codProd, string $codArmadio, string $codScaffale, int $qta): ScaricoProdottoResultDTO;
+    public function unloadProdotto(UnloadProdottoInput $input): ScaricoProdottoResultDTO;
 
     /** @return ProdottoDTO[] */
     public function searchWithStock(): array;

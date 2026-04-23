@@ -2,18 +2,21 @@
 namespace src\Application\Interfaces\IServices;
 
 use src\Application\DTO\FornitoreDTO;
+use src\Application\DTO\Input\GetFornitoreByRagSocInput;
+use src\Application\DTO\Input\CreateFornitoreInput;
+use src\Application\DTO\Input\UpdateFornitoreInput;
+use src\Application\DTO\Input\DeleteFornitoreInput;
 
 interface IFornitoreService {
 
     /** @return FornitoreDTO[] */
     public function getAll(): array;
 
-    public function getByRagSoc(string $ragSoc): ?FornitoreDTO;
+    public function getByRagSoc(GetFornitoreByRagSocInput $input): ?FornitoreDTO;
 
-    public function createFornitore(string $ragSoc, ?string $partIVA = null, ?string $telefono = null, ?string $indirizzo = null, ?string $email = null): void;
+    public function createFornitore(CreateFornitoreInput $input): void;
 
-    /** @param array<string, mixed> $fields */
-    public function updateFornitore(string $ragSoc, array $fields): void;
+    public function updateFornitore(UpdateFornitoreInput $input): void;
 
-    public function deleteFornitore(string $ragSoc): void;
+    public function deleteFornitore(DeleteFornitoreInput $input): void;
 }

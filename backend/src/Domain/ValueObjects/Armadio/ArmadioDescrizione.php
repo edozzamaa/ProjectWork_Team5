@@ -2,14 +2,14 @@
 
 namespace src\Domain\ValueObjects\Armadio;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\MaxLengthExceededException;
 
 final readonly class ArmadioDescrizione
 {
     public function __construct(public string $value)
     {
         if (mb_strlen($value) > 100) {
-            throw new InvalidArgumentException('La descrizione armadio non può superare 100 caratteri.');
+            throw new MaxLengthExceededException('La descrizione armadio non può superare 100 caratteri.');
         }
     }
 

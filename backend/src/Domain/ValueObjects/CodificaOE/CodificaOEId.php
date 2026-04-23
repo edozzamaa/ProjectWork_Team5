@@ -2,17 +2,18 @@
 
 namespace src\Domain\ValueObjects\CodificaOE;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\MaxLengthExceededException;
+use src\Domain\Exceptions\RequiredValueException;
 
 final readonly class CodificaOEId
 {
     public function __construct(public string $value)
     {
         if (strlen(trim($value)) === 0) {
-            throw new InvalidArgumentException('Il codice OE non può essere vuoto.');
+            throw new RequiredValueException('Il codice OE non può essere vuoto.');
         }
         if (mb_strlen($value) > 50) {
-            throw new InvalidArgumentException('Il codice OE non può superare 50 caratteri.');
+            throw new MaxLengthExceededException('Il codice OE non può superare 50 caratteri.');
         }
     }
 

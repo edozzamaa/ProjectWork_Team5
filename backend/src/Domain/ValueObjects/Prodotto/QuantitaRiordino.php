@@ -2,14 +2,14 @@
 
 namespace src\Domain\ValueObjects\Prodotto;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\NegativeQuantityException;
 
 final readonly class QuantitaRiordino
 {
     public function __construct(public int $value)
     {
         if ($value < 0) {
-            throw new InvalidArgumentException("La quantità di riordino non può essere negativa (valore: {$value}).");
+            throw new NegativeQuantityException("La quantità di riordino non può essere negativa (valore: {$value}).");
         }
     }
 

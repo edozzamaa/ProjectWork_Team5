@@ -4,6 +4,15 @@ namespace src\Presentation\Controllers;
 
 use Exception;
 use src\Application\Interfaces\IServices\IArmadioService;
+use src\Application\DTO\Input\GetArmadioInput;
+use src\Application\DTO\Input\CreateArmadioInput;
+use src\Application\DTO\Input\UpdateArmadioInput;
+use src\Application\DTO\Input\DeleteArmadioInput;
+use src\Application\DTO\Input\GetPosizioniByArmadioInput;
+use src\Application\DTO\Input\GetPosizioneInput;
+use src\Application\DTO\Input\CreatePosizioneInput;
+use src\Application\DTO\Input\UpdatePosizioneInput;
+use src\Application\DTO\Input\DeletePosizioneInput;
 use src\Presentation\Response\IResponse;
 
 class ArmadioController {
@@ -24,7 +33,7 @@ class ArmadioController {
 
     public function getArmadio(string $codArmadio): void {
         try {
-            $armadio = $this->service->getArmadio($codArmadio);
+            $armadio = $this->service->getArmadio(new GetArmadioInput($codArmadio));
             if ($armadio === null) {
                 $this->response->error('Armadio non trovato.', 404);
             }
@@ -40,10 +49,10 @@ class ArmadioController {
             if (empty($data['codArmadio'])) {
                 $this->response->error('Il codice armadio è obbligatorio.', 400);
             }
-            $this->service->createArmadio($data['codArmadio'], $data['descrizione'] ?? null);
+            $this->service->createArmadio(new CreateArmadioInput($data['codArmadio'], $data['descrizione'] ?? null));
             $this->response->success(['message' => 'Armadio creato con successo.'], 201);
-        } catch (\InvalidArgumentException $e) {
-            $this->response->error($e->getMessage(), 409);
+        } catch (\src\Domain\Exceptions\DomainValidationException|\InvalidArgumentException $e) {
+            $this->response->error($e->getMessage(), 400);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
         }
@@ -52,7 +61,7 @@ class ArmadioController {
     public function updateArmadio(string $codArmadio): void {
         try {
             $data = json_decode(file_get_contents('php://input'), true);
-            $this->service->updateArmadio($codArmadio, $data['descrizione'] ?? null);
+            $this->service->updateArmadio(new UpdateArmadioInput($codArmadio, $data['descrizione'] ?? null));
             $this->response->success(['message' => 'Armadio aggiornato con successo.']);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -61,7 +70,7 @@ class ArmadioController {
 
     public function deleteArmadio(string $codArmadio): void {
         try {
-            $this->service->deleteArmadio($codArmadio);
+            $this->service->deleteArmadio(new DeleteArmadioInput($codArmadio));
             $this->response->success(['message' => 'Armadio eliminato con successo.']);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -70,7 +79,7 @@ class ArmadioController {
 
     public function getPosizioniByArmadio(string $codArmadio): void {
         try {
-            $posizioni = $this->service->getPosizioniByArmadio($codArmadio);
+            $posizioni = $this->service->getPosizioniByArmadio(new GetPosizioniByArmadioInput($codArmadio));
             $this->response->success($posizioni);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -79,7 +88,7 @@ class ArmadioController {
 
     public function getPosizione(string $codArmadio, string $codScaffale): void {
         try {
-            $posizione = $this->service->getPosizione($codArmadio, $codScaffale);
+            $posizione = $this->service->getPosizione(new GetPosizioneInput($codArmadio, $codScaffale));
             if ($posizione === null) {
                 $this->response->error('Posizione non trovata.', 404);
             }
@@ -95,10 +104,10 @@ class ArmadioController {
             if (empty($data['codScaffale'])) {
                 $this->response->error('Il codice scaffale è obbligatorio.', 400);
             }
-            $this->service->createPosizione($codArmadio, $data['codScaffale'], $data['descrizione'] ?? null);
+            $this->service->createPosizione(new CreatePosizioneInput($codArmadio, $data['codScaffale'], $data['descrizione'] ?? null));
             $this->response->success(['message' => 'Posizione creata con successo.'], 201);
-        } catch (\InvalidArgumentException $e) {
-            $this->response->error($e->getMessage(), 409);
+        } catch (\src\Domain\Exceptions\DomainValidationException|\InvalidArgumentException $e) {
+            $this->response->error($e->getMessage(), 400);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
         }
@@ -107,7 +116,7 @@ class ArmadioController {
     public function updatePosizione(string $codArmadio, string $codScaffale): void {
         try {
             $data = json_decode(file_get_contents('php://input'), true);
-            $this->service->updatePosizione($codArmadio, $codScaffale, $data['descrizione'] ?? null);
+            $this->service->updatePosizione(new UpdatePosizioneInput($codArmadio, $codScaffale, $data['descrizione'] ?? null));
             $this->response->success(['message' => 'Posizione aggiornata con successo.']);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -116,7 +125,7 @@ class ArmadioController {
 
     public function deletePosizione(string $codArmadio, string $codScaffale): void {
         try {
-            $this->service->deletePosizione($codArmadio, $codScaffale);
+            $this->service->deletePosizione(new DeletePosizioneInput($codArmadio, $codScaffale));
             $this->response->success(['message' => 'Posizione eliminata con successo.']);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);

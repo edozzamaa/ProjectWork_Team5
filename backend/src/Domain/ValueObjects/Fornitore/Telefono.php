@@ -2,7 +2,7 @@
 
 namespace src\Domain\ValueObjects\Fornitore;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\InvalidFormatException;
 
 final readonly class Telefono
 {
@@ -12,7 +12,7 @@ final readonly class Telefono
     {
         $cleaned = preg_replace('/[\s\-\.\/]/', '', $value);
         if (!preg_match('/^\+?\d{6,15}$/', $cleaned)) {
-            throw new InvalidArgumentException("Numero di telefono non valido: '{$value}'. Deve contenere tra 6 e 15 cifre.");
+            throw new InvalidFormatException("Numero di telefono non valido: '{$value}'. Deve contenere tra 6 e 15 cifre.");
         }
         $this->value = $cleaned;
     }

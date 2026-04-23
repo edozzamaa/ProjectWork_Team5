@@ -2,17 +2,18 @@
 
 namespace src\Domain\ValueObjects\Fornitore;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\InvalidFormatException;
+use src\Domain\Exceptions\MaxLengthExceededException;
 
 final readonly class Email
 {
     public function __construct(public string $value)
     {
         if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidArgumentException("Email non valida: {$value}");
+            throw new InvalidFormatException("Email non valida: {$value}");
         }
         if (mb_strlen($value) > 100) {
-            throw new InvalidArgumentException('L\'email non può superare 100 caratteri.');
+            throw new MaxLengthExceededException('L\'email non può superare 100 caratteri.');
         }
     }
 

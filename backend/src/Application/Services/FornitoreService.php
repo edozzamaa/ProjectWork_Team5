@@ -9,6 +9,10 @@ use src\Domain\ValueObjects\Fornitore\Telefono;
 use src\Domain\ValueObjects\Fornitore\Indirizzo;
 use src\Application\Interfaces\IServices\IFornitoreService;
 use src\Application\DTO\FornitoreDTO;
+use src\Application\DTO\Input\GetFornitoreByRagSocInput;
+use src\Application\DTO\Input\CreateFornitoreInput;
+use src\Application\DTO\Input\UpdateFornitoreInput;
+use src\Application\DTO\Input\DeleteFornitoreInput;
 use src\Application\Interfaces\IRepositories\IFornitoreRepository;
 
 class FornitoreService implements IFornitoreService {
@@ -34,49 +38,49 @@ class FornitoreService implements IFornitoreService {
         return array_map(fn(Fornitore $f) => $this->toDTO($f), $this->fornitoreRepository->findAll());
     }
 
-    public function getByRagSoc(string $ragSoc): ?FornitoreDTO {
-        $fornitore = $this->fornitoreRepository->findByRagSoc(new FornitoreId($ragSoc));
+    public function getByRagSoc(GetFornitoreByRagSocInput $input): ?FornitoreDTO {
+        $fornitore = $this->fornitoreRepository->findByRagSoc(new FornitoreId($input->ragSoc));
         return $fornitore !== null ? $this->toDTO($fornitore) : null;
     }
 
-    public function createFornitore(string $ragSoc, ?string $partIVA = null, ?string $telefono = null, ?string $indirizzo = null, ?string $email = null): void {
-        if ($this->fornitoreRepository->findByRagSoc(new FornitoreId($ragSoc)) !== null) {
-            throw new \RuntimeException("Fornitore '{$ragSoc}' già esistente.");
+    public function createFornitore(CreateFornitoreInput $input): void {
+        if ($this->fornitoreRepository->findByRagSoc(new FornitoreId($input->ragSoc)) !== null) {
+            throw new \RuntimeException("Fornitore '{$input->ragSoc}' già esistente.");
         }
         $fornitore = new Fornitore(
-            new FornitoreId($ragSoc),
-            $partIVA !== null ? new PartitaIVA($partIVA) : null,
-            $telefono !== null ? new Telefono($telefono) : null,
-            $indirizzo !== null ? new Indirizzo($indirizzo) : null,
-            $email !== null ? new Email($email) : null
+            new FornitoreId($input->ragSoc),
+            $input->partIVA !== null ? new PartitaIVA($input->partIVA) : null,
+            $input->telefono !== null ? new Telefono($input->telefono) : null,
+            $input->indirizzo !== null ? new Indirizzo($input->indirizzo) : null,
+            $input->email !== null ? new Email($input->email) : null
         );
         $this->fornitoreRepository->save($fornitore);
     }
 
-    public function updateFornitore(string $ragSoc, array $fields): void {
-        $fornitore = $this->fornitoreRepository->findByRagSoc(new FornitoreId($ragSoc));
+    public function updateFornitore(UpdateFornitoreInput $input): void {
+        $fornitore = $this->fornitoreRepository->findByRagSoc(new FornitoreId($input->ragSoc));
         if ($fornitore === null) {
-            throw new \RuntimeException("Fornitore '{$ragSoc}' non trovato.");
+            throw new \RuntimeException("Fornitore '{$input->ragSoc}' non trovato.");
         }
-        if (array_key_exists('partIVA', $fields)) {
-            $fornitore->setPartIVA($fields['partIVA'] !== null ? new PartitaIVA($fields['partIVA']) : null);
+        if (array_key_exists('partIVA', $input->fields)) {
+            $fornitore->setPartIVA($input->fields['partIVA'] !== null ? new PartitaIVA($input->fields['partIVA']) : null);
         }
-        if (array_key_exists('telefono', $fields)) {
-            $fornitore->setTelefono($fields['telefono'] !== null ? new Telefono($fields['telefono']) : null);
+        if (array_key_exists('telefono', $input->fields)) {
+            $fornitore->setTelefono($input->fields['telefono'] !== null ? new Telefono($input->fields['telefono']) : null);
         }
-        if (array_key_exists('indirizzo', $fields)) {
-            $fornitore->setIndirizzo($fields['indirizzo'] !== null ? new Indirizzo($fields['indirizzo']) : null);
+        if (array_key_exists('indirizzo', $input->fields)) {
+            $fornitore->setIndirizzo($input->fields['indirizzo'] !== null ? new Indirizzo($input->fields['indirizzo']) : null);
         }
-        if (array_key_exists('email', $fields)) {
-            $fornitore->setEmail($fields['email'] !== null ? new Email($fields['email']) : null);
+        if (array_key_exists('email', $input->fields)) {
+            $fornitore->setEmail($input->fields['email'] !== null ? new Email($input->fields['email']) : null);
         }
-        $this->fornitoreRepository->update($fornitore, array_keys($fields));
+        $this->fornitoreRepository->update($fornitore, array_keys($input->fields));
     }
 
-    public function deleteFornitore(string $ragSoc): void {
-        if ($this->fornitoreRepository->findByRagSoc(new FornitoreId($ragSoc)) === null) {
-            throw new \RuntimeException("Fornitore '{$ragSoc}' non trovato.");
+    public function deleteFornitore(DeleteFornitoreInput $input): void {
+        if ($this->fornitoreRepository->findByRagSoc(new FornitoreId($input->ragSoc)) === null) {
+            throw new \RuntimeException("Fornitore '{$input->ragSoc}' non trovato.");
         }
-        $this->fornitoreRepository->delete(new FornitoreId($ragSoc));
+        $this->fornitoreRepository->delete(new FornitoreId($input->ragSoc));
     }
 }

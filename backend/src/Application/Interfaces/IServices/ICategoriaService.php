@@ -2,17 +2,21 @@
 namespace src\Application\Interfaces\IServices;
 
 use src\Application\DTO\CategoriaDTO;
+use src\Application\DTO\Input\GetCategoriaByCodInput;
+use src\Application\DTO\Input\CreateCategoriaInput;
+use src\Application\DTO\Input\UpdateCategoriaInput;
+use src\Application\DTO\Input\DeleteCategoriaInput;
 
 interface ICategoriaService {
 
     /** @return CategoriaDTO[] */
     public function getAll(): array;
 
-    public function getByCod(string $codCat): ?CategoriaDTO;
+    public function getByCod(GetCategoriaByCodInput $input): ?CategoriaDTO;
 
-    public function createCategoria(string $codCat, string $tipo): void;
+    public function createCategoria(CreateCategoriaInput $input): void;
 
-    public function updateCategoria(string $codCat, string $tipo): void;
+    public function updateCategoria(UpdateCategoriaInput $input): void;
 
-    public function deleteCategoria(string $codCat): void;
+    public function deleteCategoria(DeleteCategoriaInput $input): void;
 }

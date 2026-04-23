@@ -4,6 +4,14 @@ namespace src\Presentation\Controllers;
 
 use Exception;
 use src\Application\Interfaces\IServices\IProdottoService;
+use src\Application\DTO\Input\GetProdottoByCodInput;
+use src\Application\DTO\Input\GetProdottoByCategoriaInput;
+use src\Application\DTO\Input\CreateProdottoInput;
+use src\Application\DTO\Input\UpdateProdottoInput;
+use src\Application\DTO\Input\DeleteProdottoInput;
+use src\Application\DTO\Input\GetAttributiDiProdottoInput;
+use src\Application\DTO\Input\LoadProdottoInput;
+use src\Application\DTO\Input\UnloadProdottoInput;
 use src\Presentation\Response\IResponse;
 
 class ProdottoController {
@@ -24,7 +32,7 @@ class ProdottoController {
 
     public function getByCod(string $codProd): void {
         try {
-            $prodotto = $this->service->getByCod($codProd);
+            $prodotto = $this->service->getByCod(new GetProdottoByCodInput($codProd));
             if ($prodotto === null) {
                 $this->response->error('Prodotto non trovato.', 404);
             }
@@ -36,7 +44,7 @@ class ProdottoController {
 
     public function getByCategoria(string $codCat): void {
         try {
-            $prodotti = $this->service->getByCategoria($codCat);
+            $prodotti = $this->service->getByCategoria(new GetProdottoByCategoriaInput($codCat));
             $this->response->success($prodotti);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -58,16 +66,16 @@ class ProdottoController {
             if (empty($data['codProd'])) {
                 $this->response->error('Il codice prodotto è obbligatorio.', 400);
             }
-            $this->service->createProdotto(
+            $this->service->createProdotto(new CreateProdottoInput(
                 $data['codProd'],
                 (int) ($data['qtaRiordino'] ?? 0),
                 $data['codCat'] ?? null,
                 $data['codReg'] ?? null,
                 $data['codOE'] ?? null
-            );
+            ));
             $this->response->success(['message' => 'Prodotto creato con successo.'], 201);
-        } catch (\InvalidArgumentException $e) {
-            $this->response->error($e->getMessage(), 409);
+        } catch (\src\Domain\Exceptions\DomainValidationException|\InvalidArgumentException $e) {
+            $this->response->error($e->getMessage(), 400);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
         }
@@ -81,7 +89,7 @@ class ProdottoController {
                 $this->response->error('Nessun campo da aggiornare.', 400);
                 return;
             }
-            $this->service->updateProdotto($codProd, $fields);
+            $this->service->updateProdotto(new UpdateProdottoInput($codProd, $fields));
             $this->response->success(['message' => 'Prodotto aggiornato con successo.']);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -90,7 +98,7 @@ class ProdottoController {
 
     public function deleteProdotto(string $codProd): void {
         try {
-            $this->service->deleteProdotto($codProd);
+            $this->service->deleteProdotto(new DeleteProdottoInput($codProd));
             $this->response->success(['message' => 'Prodotto eliminato con successo.']);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -99,7 +107,7 @@ class ProdottoController {
 
     public function getAttributi(string $codProd): void {
         try {
-            $attributi = $this->service->getAttributi($codProd);
+            $attributi = $this->service->getAttributi(new GetAttributiDiProdottoInput($codProd));
             $this->response->success($attributi);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -112,15 +120,15 @@ class ProdottoController {
             if (empty($data['codProd']) || empty($data['codArmadio']) || empty($data['codScaffale']) || !isset($data['qta'])) {
                 $this->response->error('Codice prodotto, armadio, scaffale e quantità sono obbligatori.', 400);
             }
-            $this->service->loadProdotto(
+            $this->service->loadProdotto(new LoadProdottoInput(
                 $data['codProd'],
                 $data['codArmadio'],
                 $data['codScaffale'],
                 (int) $data['qta'],
                 $data['attributi'] ?? []
-            );
+            ));
             $this->response->success(['message' => 'Carico effettuato con successo.'], 201);
-        } catch (\InvalidArgumentException $e) {
+        } catch (\src\Domain\Exceptions\DomainValidationException|\InvalidArgumentException $e) {
             $this->response->error($e->getMessage(), 400);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
@@ -133,14 +141,14 @@ class ProdottoController {
             if (empty($data['codProd']) || empty($data['codArmadio']) || empty($data['codScaffale']) || !isset($data['qta'])) {
                 $this->response->error('Codice prodotto, armadio, scaffale e quantità sono obbligatori.', 400);
             }
-            $result = $this->service->unloadProdotto(
+            $result = $this->service->unloadProdotto(new UnloadProdottoInput(
                 $data['codProd'],
                 $data['codArmadio'],
                 $data['codScaffale'],
                 (int) $data['qta']
-            );
+            ));
             $this->response->success(['message' => 'Scarico effettuato con successo.', 'data' => $result]);
-        } catch (\InvalidArgumentException $e) {
+        } catch (\src\Domain\Exceptions\DomainValidationException|\InvalidArgumentException $e) {
             $this->response->error($e->getMessage(), 400);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);

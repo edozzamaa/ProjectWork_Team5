@@ -2,17 +2,18 @@
 
 namespace src\Domain\ValueObjects\Fornitore;
 
-use InvalidArgumentException;
+use src\Domain\Exceptions\MaxLengthExceededException;
+use src\Domain\Exceptions\RequiredValueException;
 
 final readonly class FornitoreId
 {
     public function __construct(public string $value)
     {
         if (strlen(trim($value)) === 0) {
-            throw new InvalidArgumentException('La ragione sociale non può essere vuota.');
+            throw new RequiredValueException('La ragione sociale non può essere vuota.');
         }
         if (mb_strlen($value) > 100) {
-            throw new InvalidArgumentException('La ragione sociale non può superare 100 caratteri.');
+            throw new MaxLengthExceededException('La ragione sociale non può superare 100 caratteri.');
         }
     }
 
