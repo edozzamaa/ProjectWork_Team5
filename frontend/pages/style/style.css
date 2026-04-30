@@ -1,0 +1,24 @@
+body { font-size: .9rem; }
+
+.table th {
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    background: #f8f9fa;
+}
+
+.card-stat { border-left: 4px solid #dee2e6; }
+.card-stat.primary { border-color: #0d6efd; }
+.card-stat.success  { border-color: #198754; }
+.card-stat.warning  { border-color: #fd7e14; }
+.card-stat.danger   { border-color: #dc3545; }
+
+.section-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-bottom: 2px solid #0d6efd;
+    padding-bottom: .25rem;
+    margin-bottom: 1rem;
+}
+
+.navbar-brand { letter-spacing: .03em; }
