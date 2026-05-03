@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 namespace src\Application\Interfaces\IServices;
 
-use src\Application\DTO\AttributoDTO;
-use src\Application\DTO\AttrProdDTO;
+use src\Application\DTO\Output\AttributoDTO;
+use src\Application\DTO\Output\AttrProdDTO;
 use src\Application\DTO\Input\GetAttributoByCodInput;
 use src\Application\DTO\Input\CreateAttributoInput;
 use src\Application\DTO\Input\UpdateAttributoInput;

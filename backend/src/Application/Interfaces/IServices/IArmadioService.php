@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 namespace src\Application\Interfaces\IServices;
 
-use src\Application\DTO\ArmadioDTO;
-use src\Application\DTO\PosizioneDTO;
+use src\Application\DTO\Output\ArmadioDTO;
+use src\Application\DTO\Output\PosizioneDTO;
 use src\Application\DTO\Input\GetArmadioInput;
 use src\Application\DTO\Input\CreateArmadioInput;
 use src\Application\DTO\Input\UpdateArmadioInput;

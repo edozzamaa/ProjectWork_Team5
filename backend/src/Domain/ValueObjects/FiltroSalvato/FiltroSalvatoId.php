@@ -1,20 +1,20 @@
 <?php declare(strict_types=1);
 
-namespace src\Domain\ValueObjects\Prodotto;
+namespace src\Domain\ValueObjects\FiltroSalvato;
 
 use src\Domain\Exceptions\RequiredValueException;
 
-final readonly class ProdottoId
+final readonly class FiltroSalvatoId
 {
     public function __construct(public int $value)
     {
         if ($value < 0) {
-            throw new RequiredValueException('Il codice prodotto non può essere negativo.');
+            throw new RequiredValueException('L\'id del filtro non può essere negativo.');
         }
     }
 
     public function __toString(): string
     {
-        return sprintf('%04d', $this->value);
+        return (string) $this->value;
     }
 }

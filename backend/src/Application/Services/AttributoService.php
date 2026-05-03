@@ -8,8 +8,8 @@ use src\Domain\ValueObjects\Attributo\AttributoNome;
 use src\Domain\ValueObjects\Prodotto\ProdottoId;
 use src\Domain\ValueObjects\AttrProd\ValoreAttributo;
 use src\Application\Interfaces\IServices\IAttributoService;
-use src\Application\DTO\AttributoDTO;
-use src\Application\DTO\AttrProdDTO;
+use src\Application\DTO\Output\AttributoDTO;
+use src\Application\DTO\Output\AttrProdDTO;
 use src\Application\DTO\Input\GetAttributoByCodInput;
 use src\Application\DTO\Input\CreateAttributoInput;
 use src\Application\DTO\Input\UpdateAttributoInput;
@@ -87,18 +87,18 @@ class AttributoService implements IAttributoService {
     // ── Assegnazione Attributi a Prodotto ──
 
     public function assignToProdotto(AssignAttributoToProdottoInput $input): void {
-        if ($this->prodottoRepository->findByCod(new ProdottoId($input->codProd)) === null) {
+        if ($this->prodottoRepository->findByCod(new ProdottoId((int) $input->codProd)) === null) {
             throw new \RuntimeException("Prodotto '{$input->codProd}' non trovato.");
         }
         if ($this->attributoRepository->findByCod(new AttributoId($input->codAttr)) === null) {
             throw new \RuntimeException("Attributo '{$input->codAttr}' non trovato.");
         }
-        $attrProd = new AttrProd(new ProdottoId($input->codProd), new AttributoId($input->codAttr), $input->valore !== null ? new ValoreAttributo($input->valore) : null);
+        $attrProd = new AttrProd(new ProdottoId((int) $input->codProd), new AttributoId($input->codAttr), $input->valore !== null ? new ValoreAttributo($input->valore) : null);
         $this->prodottoRepository->saveAttributo($attrProd);
     }
 
     public function removeFromProdotto(RemoveAttributoFromProdottoInput $input): void {
-        $this->prodottoRepository->deleteAttributo(new ProdottoId($input->codProd), new AttributoId($input->codAttr));
+        $this->prodottoRepository->deleteAttributo(new ProdottoId((int) $input->codProd), new AttributoId($input->codAttr));
     }
 
     /** @return AttrProdDTO[] */

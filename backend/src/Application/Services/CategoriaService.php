@@ -5,7 +5,7 @@ use src\Domain\Models\Categoria;
 use src\Domain\ValueObjects\Categoria\CategoriaId;
 use src\Domain\ValueObjects\Categoria\CategoriaTipo;
 use src\Application\Interfaces\IServices\ICategoriaService;
-use src\Application\DTO\CategoriaDTO;
+use src\Application\DTO\Output\CategoriaDTO;
 use src\Application\DTO\Input\GetCategoriaByCodInput;
 use src\Application\DTO\Input\CreateCategoriaInput;
 use src\Application\DTO\Input\UpdateCategoriaInput;

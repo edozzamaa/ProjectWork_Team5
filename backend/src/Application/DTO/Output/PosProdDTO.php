@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-namespace src\Application\DTO;
+namespace src\Application\DTO\Output;
 
 class PosProdDTO {
 

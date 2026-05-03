@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 namespace src\Application\Interfaces\IServices;
 
-use src\Application\DTO\ProdottoDTO;
-use src\Application\DTO\AttrProdDTO;
-use src\Application\DTO\ScaricoProdottoResultDTO;
+use src\Application\DTO\Output\ProdottoDTO;
+use src\Application\DTO\Output\AttrProdDTO;
+use src\Application\DTO\Output\ScaricoProdottoResultDTO;
 use src\Application\DTO\Input\GetProdottoByCodInput;
 use src\Application\DTO\Input\GetProdottoByCategoriaInput;
 use src\Application\DTO\Input\CreateProdottoInput;
@@ -23,7 +23,7 @@ interface IProdottoService {
     /** @return ProdottoDTO[] */
     public function getByCategoria(GetProdottoByCategoriaInput $input): array;
 
-    public function createProdotto(CreateProdottoInput $input): void;
+    public function createProdotto(CreateProdottoInput $input): string;
 
     public function updateProdotto(UpdateProdottoInput $input): void;
 

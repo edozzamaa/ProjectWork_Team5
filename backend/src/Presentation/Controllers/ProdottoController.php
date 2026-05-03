@@ -63,17 +63,13 @@ class ProdottoController {
     public function createProdotto(): void {
         try {
             $data = json_decode(file_get_contents('php://input'), true);
-            if (empty($data['codProd'])) {
-                $this->response->error('Il codice prodotto è obbligatorio.', 400);
-            }
-            $this->service->createProdotto(new CreateProdottoInput(
-                $data['codProd'],
+            $newCodProd = $this->service->createProdotto(new CreateProdottoInput(
                 (int) ($data['qtaRiordino'] ?? 0),
                 $data['codCat'] ?? null,
                 $data['codReg'] ?? null,
                 $data['codOE'] ?? null
             ));
-            $this->response->success(['message' => 'Prodotto creato con successo.'], 201);
+            $this->response->success(['message' => 'Prodotto creato con successo.', 'codProd' => $newCodProd], 201);
         } catch (\src\Domain\Exceptions\DomainValidationException|\InvalidArgumentException $e) {
             $this->response->error($e->getMessage(), 400);
         } catch (Exception $e) {

@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 namespace src\Application\Interfaces\IServices;
 
-use src\Application\DTO\CodificaRegDTO;
-use src\Application\DTO\CodificaOEDTO;
+use src\Application\DTO\Output\CodificaRegDTO;
+use src\Application\DTO\Output\CodificaOEDTO;
 use src\Application\DTO\Input\GetCodificaRegByCodInput;
 use src\Application\DTO\Input\CreateCodificaRegInput;
 use src\Application\DTO\Input\UpdateCodificaRegInput;

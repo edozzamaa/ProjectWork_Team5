@@ -30,6 +30,7 @@
                     'codifiche' => ['icon' => 'upc-scan',      'label' => 'Codifiche', 'href' => '/codifiche.php'],
                     'attributi' => ['icon' => 'list-check',    'label' => 'Attributi', 'href' => '/attributi.php'],
                     'report'    => ['icon' => 'graph-up',      'label' => 'Report',    'href' => '/report.php'],
+                    'ricerca'   => ['icon' => 'search',         'label' => 'Ricerca',   'href' => '/ricerca.php'],
                 ];
                 foreach ($navItems as $key => $item):
                     $active = $currentPage === $key ? 'active fw-semibold' : '';

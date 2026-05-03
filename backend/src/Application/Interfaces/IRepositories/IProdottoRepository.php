@@ -17,7 +17,7 @@ interface IProdottoRepository {
     /** @return Prodotto[] */
     public function findByCategoria(CategoriaId $codCat): array;
 
-    public function save(Prodotto $prodotto): void;
+    public function save(Prodotto $prodotto): ProdottoId;
 
     /** @param string[] $columns */
     public function update(Prodotto $prodotto, array $columns): void;

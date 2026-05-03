@@ -1,5 +1,17 @@
 <?php declare(strict_types=1);
 
+/**
+ * index.php — punto di ingresso unico per tutte le richieste API (pattern "Front Controller").
+ *
+ * Ogni chiamata che arriva al backend passa da qui. Questo file:
+ *  1. Carica le dipendenze (autoloader Composer)
+ *  2. Risolve path e metodo HTTP della richiesta
+ *  3. Costruisce tutti i repository, servizi e controller (dependency injection manuale)
+ *  4. Instrada la richiesta al controller corretto tramite uno switch
+ *
+ * Nessuna logica di business risiede qui: questo file si limita a smistare il traffico.
+ */
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use src\Application\Services\ArmadioService;
@@ -8,6 +20,7 @@ use src\Application\Services\ProdottoService;
 use src\Application\Services\FornitoreService;
 use src\Application\Services\CodificaService;
 use src\Application\Services\AttributoService;
+use src\Application\Services\FiltroSalvatoService;
 use src\Application\Services\ReportService;
 use src\Infrastructure\Repositories\ArmadioRepository;
 use src\Infrastructure\Repositories\CategoriaRepository;
@@ -16,6 +29,7 @@ use src\Infrastructure\Repositories\FornitoreRepository;
 use src\Infrastructure\Repositories\CodificaRegRepository;
 use src\Infrastructure\Repositories\CodificaOERepository;
 use src\Infrastructure\Repositories\AttributoRepository;
+use src\Infrastructure\Repositories\FiltroSalvatoRepository;
 use src\Infrastructure\Repositories\GiacenzaRepository;
 use src\Presentation\Controllers\ArmadioController;
 use src\Presentation\Controllers\CategoriaController;
@@ -23,13 +37,20 @@ use src\Presentation\Controllers\ProdottoController;
 use src\Presentation\Controllers\FornitoreController;
 use src\Presentation\Controllers\CodificaController;
 use src\Presentation\Controllers\AttributoController;
+use src\Presentation\Controllers\FiltroSalvatoController;
 use src\Presentation\Controllers\ReportController;
 use src\Presentation\Response\JsonResponse;
 
+// Tutte le risposte del backend sono JSON, indipendentemente dall'esito.
 header('Content-Type: application/json');
 
 $response = new JsonResponse();
 
+/**
+ * Risponde con 404 e termina l'esecuzione.
+ * Viene chiamata quando il path non corrisponde ad alcuna route nota
+ * o quando la richiesta non parte da /api/.
+ */
 function denyAccess(): never {
     http_response_code(404);
     header('Content-Type: application/json');
@@ -53,11 +74,20 @@ if (str_starts_with($normalizedPath, '/index.php')) {
     $normalizedPath = substr($normalizedPath, strlen('/index.php')) ?: '/';
 }
 
+// Sicurezza: accettiamo solo richieste che iniziano con /api/.
+// Qualsiasi altra richiesta (es. tentativi di accedere a file PHP diretti) viene bloccata.
 $isApiRoute = str_starts_with($normalizedPath, '/api/');
 if (!$isApiRoute) {
     denyAccess();
 }
 
+// -----------------------------------------------------------------------
+// Dependency Injection manuale.
+// Ogni repository riceve la connessione al DB tramite DatabaseConnector (singleton).
+// Ogni service riceve i repository di cui ha bisogno.
+// Ogni controller riceve il proprio service e l'oggetto $response per rispondere.
+// In questo modo nessun layer conosce i dettagli implementativi degli altri.
+// -----------------------------------------------------------------------
 $armadioRepo     = new ArmadioRepository();
 $categoriaRepo   = new CategoriaRepository();
 $prodottoRepo    = new ProdottoRepository();
@@ -66,6 +96,7 @@ $codificaRegRepo = new CodificaRegRepository();
 $codificaOERepo  = new CodificaOERepository();
 $attributoRepo   = new AttributoRepository();
 $giacenzaRepo    = new GiacenzaRepository();
+$filtroRepo      = new FiltroSalvatoRepository();
 
 $armadioService   = new ArmadioService($armadioRepo);
 $categoriaService = new CategoriaService($categoriaRepo);
@@ -74,6 +105,7 @@ $fornitoreService = new FornitoreService($fornitoreRepo);
 $codificaService  = new CodificaService($codificaRegRepo, $codificaOERepo);
 $attributoService = new AttributoService($attributoRepo, $prodottoRepo);
 $reportService    = new ReportService($giacenzaRepo, $prodottoRepo, $categoriaRepo);
+$filtroService    = new FiltroSalvatoService($filtroRepo);
 
 $armadioCtrl   = new ArmadioController($armadioService, $response);
 $categoriaCtrl = new CategoriaController($categoriaService, $response);
@@ -82,9 +114,17 @@ $fornitoreCtrl = new FornitoreController($fornitoreService, $response);
 $codificaCtrl  = new CodificaController($codificaService, $response);
 $attributoCtrl = new AttributoController($attributoService, $response);
 $reportCtrl    = new ReportController($reportService, $response);
+$filtroCtrl    = new FiltroSalvatoController($filtroService, $response);
 
+// $segments non è usato nello switch ma può tornare utile per debug o futuri refactoring.
 $segments = explode('/', trim($normalizedPath, '/'));
 
+// -----------------------------------------------------------------------
+// Router: confronta path e metodo HTTP con ogni case.
+// I path statici (es. /api/prodotti) si verificano con ===.
+// I path con parametri (es. /api/prodotti/123) si verificano con preg_match,
+// che cattura il parametro in $m[1] (o $m[2] per path annidati).
+// -----------------------------------------------------------------------
 try {
     switch (true) {
 
@@ -294,6 +334,18 @@ try {
 
         case $normalizedPath === '/api/report/giacenze' && $method === 'GET':
             $reportCtrl->reportGiacenze();
+            break;
+
+        case $normalizedPath === '/api/filtri' && $method === 'GET':
+            $filtroCtrl->getAll();
+            break;
+
+        case $normalizedPath === '/api/filtri' && $method === 'POST':
+            $filtroCtrl->create();
+            break;
+
+        case preg_match('#^/api/filtri/(\d+)$#', $normalizedPath, $m) === 1 && $method === 'DELETE':
+            $filtroCtrl->delete($m[1]);
             break;
 
         default:

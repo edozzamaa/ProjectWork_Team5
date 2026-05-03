@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 namespace src\Application\Interfaces\IServices;
 
-use src\Application\DTO\PanoramicaDTO;
-use src\Application\DTO\ReportProdottoDTO;
-use src\Application\DTO\PosProdDTO;
+use src\Application\DTO\Output\PanoramicaDTO;
+use src\Application\DTO\Output\ReportProdottoDTO;
+use src\Application\DTO\Output\PosProdDTO;
 
 interface IReportService {
 

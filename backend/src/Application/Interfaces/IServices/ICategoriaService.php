@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 namespace src\Application\Interfaces\IServices;
 
-use src\Application\DTO\CategoriaDTO;
+use src\Application\DTO\Output\CategoriaDTO;
 use src\Application\DTO\Input\GetCategoriaByCodInput;
 use src\Application\DTO\Input\CreateCategoriaInput;
 use src\Application\DTO\Input\UpdateCategoriaInput;

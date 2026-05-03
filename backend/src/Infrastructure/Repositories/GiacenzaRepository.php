@@ -157,7 +157,7 @@ class GiacenzaRepository implements IGiacenzaRepository {
 
         while ($row = $result->fetch_assoc()) {
             $prodotti[] = [
-                'codProd' => (string) $row['codProd'],
+                'codProd' => sprintf('%04d', (int) $row['codProd']),
                 'qtaRiordino' => (int) $row['qtaRiordino'],
                 'qtaTotale' => (int) $row['qtaTotale'],
             ];
@@ -168,7 +168,7 @@ class GiacenzaRepository implements IGiacenzaRepository {
 
     private function rowToModel(array $row): PosProd {
         return PosProd::reconstituteFromDatabase(
-            new ProdottoId((string) $row['codProd']),
+            new ProdottoId((int) $row['codProd']),
             new ArmadioId((string) $row['codArmadio']),
             new ScaffaleId((string) $row['codScaffale']),
             new Quantita((int) $row['qta'])

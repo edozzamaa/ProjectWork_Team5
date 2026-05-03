@@ -5,11 +5,22 @@ namespace src\Infrastructure;
 use mysqli;
 use RuntimeException;
 
+/**
+ * DatabaseConnector — gestisce la connessione al database MariaDB.
+ *
+ * Usa il pattern Singleton: esiste una sola istanza per tutta la durata della richiesta.
+ * Questo evita di aprire una nuova connessione ad ogni repository che ne ha bisogno.
+ *
+ * I parametri di connessione (host, utente, password, nome DB) vengono letti
+ * dal file conf/database.ini, che non è versionato nel repository per sicurezza.
+ */
 class DatabaseConnector {
     private static ?self $instance = null;
     private mysqli $dbconnection;
 
     private function __construct() {
+        // Abilita le eccezioni mysqli: invece di silenziare gli errori SQL,
+        // viene lanciata un'eccezione che risale fino al gestore globale in index.php.
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
         $configPath = __DIR__ . '/../../conf/database.ini';
@@ -29,6 +40,7 @@ class DatabaseConnector {
     }
 
     public static function getInstance(): self {
+        // Prima chiamata: crea la connessione. Chiamate successive: restituisce quella esistente.
         if (self::$instance === null) {
             self::$instance = new self();
         }

@@ -15,9 +15,9 @@ use src\Domain\ValueObjects\Attributo\AttributoId;
 use src\Domain\ValueObjects\AttrProd\ValoreAttributo;
 use src\Domain\ValueObjects\PosProd\Quantita;
 use src\Application\Interfaces\IServices\IProdottoService;
-use src\Application\DTO\ProdottoDTO;
-use src\Application\DTO\AttrProdDTO;
-use src\Application\DTO\ScaricoProdottoResultDTO;
+use src\Application\DTO\Output\ProdottoDTO;
+use src\Application\DTO\Output\AttrProdDTO;
+use src\Application\DTO\Output\ScaricoProdottoResultDTO;
 use src\Application\DTO\Input\GetProdottoByCodInput;
 use src\Application\DTO\Input\GetProdottoByCategoriaInput;
 use src\Application\DTO\Input\CreateProdottoInput;
@@ -87,9 +87,9 @@ class ProdottoService implements IProdottoService {
     }
 
     public function getByCod(GetProdottoByCodInput $input): ?ProdottoDTO {
-        $prodotto = $this->prodottoRepository->findByCod(new ProdottoId($input->codProd));
+        $prodotto = $this->prodottoRepository->findByCod(new ProdottoId((int) $input->codProd));
         if ($prodotto === null) return null;
-        $attributi = array_map(fn($a) => $this->attrProdToDTO($a), $this->prodottoRepository->getAttributi(new ProdottoId($input->codProd)));
+        $attributi = array_map(fn($a) => $this->attrProdToDTO($a), $this->prodottoRepository->getAttributi(new ProdottoId((int) $input->codProd)));
         return $this->toDTO($prodotto, null, $attributi);
     }
 
@@ -100,22 +100,20 @@ class ProdottoService implements IProdottoService {
         return array_map(fn(Prodotto $p) => $this->toDTO($p, null, $attrMap[(string) $p->getCodProd()] ?? []), $prodotti);
     }
 
-    public function createProdotto(CreateProdottoInput $input): void {
-        if ($this->prodottoRepository->findByCod(new ProdottoId($input->codProd)) !== null) {
-            throw new \RuntimeException("Prodotto '{$input->codProd}' già esistente.");
-        }
+    public function createProdotto(CreateProdottoInput $input): string {
         $prodotto = new Prodotto(
-            new ProdottoId($input->codProd),
+            new ProdottoId(0),
             new QuantitaRiordino($input->qtaRiordino),
             $input->codCat !== null ? new CategoriaId($input->codCat) : null,
             $input->codReg !== null ? new CodificaRegId($input->codReg) : null,
             $input->codOE !== null ? new CodificaOEId($input->codOE) : null
         );
-        $this->prodottoRepository->save($prodotto);
+        $newId = $this->prodottoRepository->save($prodotto);
+        return (string) $newId;
     }
 
     public function updateProdotto(UpdateProdottoInput $input): void {
-        $prodotto = $this->prodottoRepository->findByCod(new ProdottoId($input->codProd));
+        $prodotto = $this->prodottoRepository->findByCod(new ProdottoId((int) $input->codProd));
         if ($prodotto === null) {
             throw new \RuntimeException("Prodotto '{$input->codProd}' non trovato.");
         }
@@ -135,15 +133,15 @@ class ProdottoService implements IProdottoService {
     }
 
     public function deleteProdotto(DeleteProdottoInput $input): void {
-        if ($this->prodottoRepository->findByCod(new ProdottoId($input->codProd)) === null) {
+        if ($this->prodottoRepository->findByCod(new ProdottoId((int) $input->codProd)) === null) {
             throw new \RuntimeException("Prodotto '{$input->codProd}' non trovato.");
         }
-        $this->prodottoRepository->delete(new ProdottoId($input->codProd));
+        $this->prodottoRepository->delete(new ProdottoId((int) $input->codProd));
     }
 
     /** @return AttrProdDTO[] */
     public function getAttributi(GetAttributiDiProdottoInput $input): array {
-        return array_map(fn(AttrProd $a) => $this->attrProdToDTO($a), $this->prodottoRepository->getAttributi(new ProdottoId($input->codProd)));
+        return array_map(fn(AttrProd $a) => $this->attrProdToDTO($a), $this->prodottoRepository->getAttributi(new ProdottoId((int) $input->codProd)));
     }
 
     // ── Carico Prodotto ──
@@ -153,7 +151,7 @@ class ProdottoService implements IProdottoService {
             throw new \InvalidArgumentException("La quantità deve essere maggiore di zero.");
         }
 
-        $prodotto = $this->prodottoRepository->findByCod(new ProdottoId($input->codProd));
+        $prodotto = $this->prodottoRepository->findByCod(new ProdottoId((int) $input->codProd));
         if ($prodotto === null) {
             throw new \RuntimeException("Prodotto '{$input->codProd}' non trovato.");
         }
@@ -163,14 +161,14 @@ class ProdottoService implements IProdottoService {
             throw new \RuntimeException("Posizione '{$input->codArmadio}/{$input->codScaffale}' non trovata.");
         }
 
-        $giacenza = $this->giacenzaRepository->find(new ProdottoId($input->codProd), new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale));
+        $giacenza = $this->giacenzaRepository->find(new ProdottoId((int) $input->codProd), new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale));
 
         if ($giacenza !== null) {
             $giacenza->setQta($giacenza->getQta()->aggiungi($input->qta));
             $this->giacenzaRepository->save($giacenza);
         } else {
             $nuovaGiacenza = new PosProd(
-                new ProdottoId($input->codProd),
+                new ProdottoId((int) $input->codProd),
                 new ArmadioId($input->codArmadio),
                 new ScaffaleId($input->codScaffale),
                 new Quantita($input->qta)
@@ -179,7 +177,7 @@ class ProdottoService implements IProdottoService {
         }
 
         foreach ($input->attributi as $codAttr => $valore) {
-            $attrProd = new AttrProd(new ProdottoId($input->codProd), new AttributoId($codAttr), $valore !== null ? new ValoreAttributo($valore) : null);
+            $attrProd = new AttrProd(new ProdottoId((int) $input->codProd), new AttributoId($codAttr), $valore !== null ? new ValoreAttributo($valore) : null);
             $this->prodottoRepository->saveAttributo($attrProd);
         }
     }
@@ -191,25 +189,25 @@ class ProdottoService implements IProdottoService {
             throw new \InvalidArgumentException("La quantità deve essere maggiore di zero.");
         }
 
-        $prodotto = $this->prodottoRepository->findByCod(new ProdottoId($input->codProd));
+        $prodotto = $this->prodottoRepository->findByCod(new ProdottoId((int) $input->codProd));
         if ($prodotto === null) {
             throw new \RuntimeException("Prodotto '{$input->codProd}' non trovato.");
         }
 
-        $giacenza = $this->giacenzaRepository->find(new ProdottoId($input->codProd), new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale));
+        $giacenza = $this->giacenzaRepository->find(new ProdottoId((int) $input->codProd), new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale));
         if ($giacenza === null) {
             throw new \RuntimeException("Nessuna giacenza trovata per '{$input->codProd}' nella posizione '{$input->codArmadio}/{$input->codScaffale}'.");
         }
 
         $nuovaQta = $giacenza->getQta()->sottrai($input->qta);
         if ($nuovaQta->isZero()) {
-            $this->giacenzaRepository->delete(new ProdottoId($input->codProd), new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale));
+            $this->giacenzaRepository->delete(new ProdottoId((int) $input->codProd), new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale));
         } else {
             $giacenza->setQta($nuovaQta);
             $this->giacenzaRepository->save($giacenza);
         }
 
-        $giacenzaTotale = $this->giacenzaRepository->giacenzaTotale(new ProdottoId($input->codProd));
+        $giacenzaTotale = $this->giacenzaRepository->giacenzaTotale(new ProdottoId((int) $input->codProd));
         $sottoSoglia = $prodotto->necessitaRiordino($giacenzaTotale);
 
         return new ScaricoProdottoResultDTO($sottoSoglia, $prodotto->getQtaRiordino()->value, $giacenzaTotale);

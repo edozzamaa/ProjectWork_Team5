@@ -11,7 +11,10 @@ async function apiCall(path, method = 'GET', body = null) {
     };
     if (body !== null) opts.body = JSON.stringify(body);
     const res = await fetch('/api' + path, opts);
-    const json = await res.json();
+    const text = await res.text();
+    let json;
+    try { json = JSON.parse(text); }
+    catch { throw new Error('Risposta non valida dal server (HTTP ' + res.status + ')'); }
     if (!json.success) throw new Error(json.message ?? 'Errore sconosciuto');
     return json.data ?? null;
 }
@@ -49,6 +52,13 @@ function downloadCsv(rows, headers, filename) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+}
+
+function tsFilename(base, ext) {
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const ts = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
+    return `${base}_${ts}.${ext}`;
 }
 </script>
 </body>

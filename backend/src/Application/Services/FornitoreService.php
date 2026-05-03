@@ -8,7 +8,7 @@ use src\Domain\ValueObjects\Fornitore\PartitaIVA;
 use src\Domain\ValueObjects\Fornitore\Telefono;
 use src\Domain\ValueObjects\Fornitore\Indirizzo;
 use src\Application\Interfaces\IServices\IFornitoreService;
-use src\Application\DTO\FornitoreDTO;
+use src\Application\DTO\Output\FornitoreDTO;
 use src\Application\DTO\Input\GetFornitoreByRagSocInput;
 use src\Application\DTO\Input\CreateFornitoreInput;
 use src\Application\DTO\Input\UpdateFornitoreInput;
