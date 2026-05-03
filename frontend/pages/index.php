@@ -17,7 +17,7 @@
     </div>
     <div class="col-6 col-md-3">
         <div class="card card-stat warning shadow-sm p-3 h-100">
-            <div class="text-muted small">Referenze</div>
+            <div class="text-muted small">Prodotti</div>
             <div class="fs-2 fw-bold text-warning" id="statProdotti">—</div>
         </div>
     </div>
