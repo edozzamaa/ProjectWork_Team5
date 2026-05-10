@@ -1,26 +1,27 @@
-<?php include '_header.php'; ?>
+﻿<?php include '_header.php'; ?>
 
-<h2 class="section-title mb-4"><i class="bi bi-search me-2"></i>Ricerca prodotti</h2>
+<section aria-labelledby="titoloRicerca">
+<h1 class="section-title mb-4" id="titoloRicerca"><i class="bi bi-search me-2"></i>Ricerca prodotti</h1>
 
 <!-- Filtri salvati -->
-<div class="card shadow-sm mb-4 d-none" id="cardFiltriSalvati">
-    <div class="card-header fw-semibold d-flex align-items-center justify-content-between"
+<aside class="card shadow-sm mb-4 d-none" id="cardFiltriSalvati" aria-label="Filtri salvati">
+    <header class="card-header fw-semibold d-flex align-items-center justify-content-between"
          role="button" data-bs-toggle="collapse" data-bs-target="#filtriSalvatiCollapse"
          aria-expanded="true" aria-controls="filtriSalvatiCollapse" style="cursor:pointer;">
         <span><i class="bi bi-bookmark-star me-2"></i>Filtri salvati</span>
         <i class="bi bi-chevron-up transition-icon" id="filtriSalvatiChevron"></i>
-    </div>
+    </header>
     <div class="collapse show" id="filtriSalvatiCollapse">
         <div class="card-body py-2" id="filtriSalvatiContainer"></div>
     </div>
-</div>
+</aside>
 
 <!-- Pannello filtri -->
-<div class="card shadow-sm mb-4">
-    <div class="card-header fw-semibold">
+<section class="card shadow-sm mb-4" aria-labelledby="titoloFiltri">
+    <header class="card-header fw-semibold" id="titoloFiltri">
         <i class="bi bi-funnel me-2"></i>Filtri
-    </div>
-    <div class="card-body">
+    </header>
+    <form class="card-body" role="search" aria-label="Filtri ricerca prodotti" onsubmit="eseguiRicerca(); return false;">
         <!-- Filtri base -->
         <div class="row g-3 mb-3">
             <div class="col-sm-6 col-lg-3">
@@ -63,27 +64,25 @@
             <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalSalvaFiltro">
                 <i class="bi bi-bookmark-plus me-1"></i>Salva filtro
             </button>
-            <button class="btn btn-primary btn-sm" onclick="eseguiRicerca()">
+            <button class="btn btn-primary btn-sm" type="submit">
                 <i class="bi bi-search me-1"></i>Cerca
             </button>
             <button class="btn btn-outline-secondary btn-sm" onclick="resetFiltri()">
                 <i class="bi bi-x-circle me-1"></i>Reset
             </button>
         </div>
-    </div>
-</div>
+    </form>
+</section>
 
 <!-- Risultati -->
-<div class="card shadow-sm">
-    <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+<section class="card shadow-sm" aria-labelledby="lblRisultati">
+    <header class="card-header fw-semibold d-flex justify-content-between align-items-center">
         <span id="lblRisultati"><i class="bi bi-table me-2"></i>Risultati</span>
-        <button id="btnExcelRicerca" class="btn btn-sm btn-outline-success d-none" onclick="exportExcelRicerca()">
-            <i class="bi bi-file-earmark-excel me-1"></i>Excel
-        </button>
-    </div>
+    </header>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
+                <caption class="visually-hidden">Risultati ricerca prodotti</caption>
                 <thead>
                     <tr>
                         <th scope="col">Codice</th>
@@ -103,14 +102,15 @@
             </table>
         </div>
     </div>
-</div>
+</section>
+</section>
 
 <!-- Modal salva filtro -->
-<div class="modal fade" id="modalSalvaFiltro" tabindex="-1" aria-labelledby="modalSalvaFiltroLabel" aria-hidden="true">
+<div class="modal fade" id="modalSalvaFiltro" tabindex="-1" aria-labelledby="modalSalvaFiltroLabel" aria-hidden="true" role="dialog">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalSalvaFiltroLabel"><i class="bi bi-bookmark-plus me-2"></i>Salva filtro</h5>
+                <h2 class="modal-title" id="modalSalvaFiltroLabel"><i class="bi bi-bookmark-plus me-2"></i>Salva filtro</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             <div class="modal-body">
@@ -129,7 +129,6 @@
     </div>
 </div>
 
-<?php include '_footer.php'; ?>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script src="/js/ricerca.js?v=<?= filemtime(__DIR__ . '/js/ricerca.js') ?>"></script>
 <script>
@@ -142,3 +141,4 @@
     chevron.style.transition = 'transform .25s ease';
 })();
 </script>
+<?php include '_footer.php'; ?>

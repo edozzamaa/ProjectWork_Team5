@@ -99,7 +99,7 @@ $giacenzaRepo    = new GiacenzaRepository();
 $filtroRepo      = new FiltroSalvatoRepository();
 
 $armadioService   = new ArmadioService($armadioRepo);
-$categoriaService = new CategoriaService($categoriaRepo);
+$categoriaService = new CategoriaService($categoriaRepo, $prodottoRepo);
 $prodottoService  = new ProdottoService($prodottoRepo, $armadioRepo, $giacenzaRepo);
 $fornitoreService = new FornitoreService($fornitoreRepo);
 $codificaService  = new CodificaService($codificaRegRepo, $codificaOERepo);
@@ -210,6 +210,10 @@ try {
 
         case preg_match('#^/api/prodotti/categoria/([^/]+)$#', $normalizedPath, $m) === 1 && $method === 'GET':
             $prodottoCtrl->getByCategoria(urldecode($m[1]));
+            break;
+
+        case preg_match('#^/api/prodotti/categoria/([^/]+)$#', $normalizedPath, $m) === 1 && $method === 'DELETE':
+            $prodottoCtrl->deleteByCategoria(urldecode($m[1]));
             break;
 
         case preg_match('#^/api/prodotti/([^/]+)$#', $normalizedPath, $m) === 1 && $method === 'GET':

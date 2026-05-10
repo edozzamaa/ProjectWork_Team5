@@ -38,4 +38,6 @@ interface IProdottoService {
 
     /** @return ProdottoDTO[] */
     public function searchWithStock(): array;
+
+    public function deleteByCategoria(GetProdottoByCategoriaInput $input): int;
 }

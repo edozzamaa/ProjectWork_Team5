@@ -1,14 +1,16 @@
 ﻿<?php include '_header.php'; ?>
 
-<div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="section-title mb-0"><i class="bi bi-box me-2"></i>Prodotti</h2>
+<section aria-labelledby="titoloProdotti">
+<header class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="section-title mb-0" id="titoloProdotti"><i class="bi bi-box me-2"></i>Prodotti</h1>
     <button class="btn btn-primary btn-sm" onclick="openCreate()">
         <i class="bi bi-plus-lg me-1"></i>Nuovo prodotto
     </button>
-</div>
+</header>
 
 <div class="table-responsive">
     <table class="table table-hover align-middle">
+        <caption class="visually-hidden">Elenco prodotti</caption>
         <thead>
             <tr>
                 <th scope="col"></th>
@@ -23,39 +25,42 @@
         </tbody>
     </table>
 </div>
+</section>
 
 <!-- Modal crea/modifica prodotto -->
-<div class="modal fade" id="modalProdotto" tabindex="-1" aria-labelledby="titleProdotto" aria-hidden="true">
+<div class="modal fade" id="modalProdotto" tabindex="-1" aria-labelledby="titleProdotto" aria-hidden="true" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="titleProdotto">Prodotto</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h2 class="modal-title" id="titleProdotto">Prodotto</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             <div class="modal-body">
+                <form id="formProdotto" onsubmit="submitProdotto(); return false;" novalidate>
                 <input type="hidden" id="fCodProd">
                 <div class="mb-3">
-                    <label class="form-label">Soglia riordino</label>
+                    <label class="form-label" for="fQtaRiordino">Soglia riordino</label>
                     <input type="number" class="form-control" id="fQtaRiordino" min="0" value="0">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Categoria</label>
+                    <label class="form-label" for="fCodCat">Categoria <span class="text-danger" id="fCodCatReq">*</span></label>
                     <select class="form-select" id="fCodCat"><option value="">— nessuna —</option></select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Codifica regionale</label>
+                    <label class="form-label" for="fCodReg">Codifica regionale</label>
                     <select class="form-select" id="fCodReg"><option value="">— nessuna —</option></select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Codifica OE</label>
+                    <label class="form-label" for="fCodOE">Codifica OE</label>
                     <select class="form-select" id="fCodOE"><option value="">— nessuna —</option></select>
                 </div>
                 <hr>
-                <h6 class="mb-2">Attributi <span class="text-muted small fw-normal">(opzionale)</span></h6>
+                <h3 class="mb-2 fs-6">Attributi <span class="text-muted small fw-normal">(opzionale)</span></h3>
                 <div id="prodAttrContainer"></div>
                 <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="addProdAttrRow()">
                     <i class="bi bi-plus"></i> Aggiungi attributo
                 </button>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
@@ -66,35 +71,37 @@
 </div>
 
 <!-- Modal carico -->
-<div class="modal fade" id="modalCarico" tabindex="-1" aria-labelledby="titleCarico" aria-hidden="true">
+<div class="modal fade" id="modalCarico" tabindex="-1" aria-labelledby="titleCarico" aria-hidden="true" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-success-subtle">
-                <h5 class="modal-title" id="titleCarico"><i class="bi bi-arrow-down-circle me-2 text-success"></i>Carico merce — <span id="titoloCarico"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h2 class="modal-title" id="titleCarico"><i class="bi bi-arrow-down-circle me-2 text-success"></i>Carico merce — <span id="titoloCarico"></span></h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             <div class="modal-body">
+                <form id="formCarico" onsubmit="submitCarico(); return false;" novalidate>
                 <div class="row g-3">
                     <div class="col-md-5">
-                        <label class="form-label">Armadio <span class="text-danger">*</span></label>
+                        <label class="form-label" for="fCaricoArmadio">Armadio <span class="text-danger">*</span></label>
                         <select class="form-select" id="fCaricoArmadio"><option value="">— seleziona armadio —</option></select>
                     </div>
                     <div class="col-md-5">
-                        <label class="form-label">Scaffale <span class="text-danger">*</span></label>
+                        <label class="form-label" for="fCaricoScaffale">Scaffale <span class="text-danger">*</span></label>
                         <select class="form-select" id="fCaricoScaffale" disabled><option value="">— prima seleziona armadio —</option></select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Quantità <span class="text-danger">*</span></label>
+                        <label class="form-label" for="fCaricoQta">Quantità <span class="text-danger">*</span></label>
                         <input type="number" class="form-control" id="fCaricoQta" min="1" value="1">
                     </div>
                 </div>
                 <hr>
-                <h6 class="mb-2">Attributi <span class="text-muted small fw-normal">(opzionale)</span></h6>
+                <h3 class="mb-2 fs-6">Attributi <span class="text-muted small fw-normal">(opzionale)</span></h3>
                 <div id="attrContainer"></div>
                 <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="addAttrRow()">
                     <i class="bi bi-plus"></i> Aggiungi attributo
                 </button>
                 <input type="hidden" id="fCaricoCodProd">
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
@@ -107,29 +114,31 @@
 </div>
 
 <!-- Modal scarico -->
-<div class="modal fade" id="modalScarico" tabindex="-1" aria-labelledby="titleScarico" aria-hidden="true">
+<div class="modal fade" id="modalScarico" tabindex="-1" aria-labelledby="titleScarico" aria-hidden="true" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-warning-subtle">
-                <h5 class="modal-title" id="titleScarico"><i class="bi bi-arrow-up-circle me-2 text-warning"></i>Scarico merce — <span id="titoloScarico"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h2 class="modal-title" id="titleScarico"><i class="bi bi-arrow-up-circle me-2 text-warning"></i>Scarico merce — <span id="titoloScarico"></span></h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             <div class="modal-body">
+                <form id="formScarico" onsubmit="submitScarico(); return false;" novalidate>
                 <div class="row g-3">
                     <div class="col-md-5">
-                        <label class="form-label">Armadio <span class="text-danger">*</span></label>
+                        <label class="form-label" for="fScaricoCodArmadio">Armadio <span class="text-danger">*</span></label>
                         <select class="form-select" id="fScaricoCodArmadio"><option value="">— seleziona armadio —</option></select>
                     </div>
                     <div class="col-md-5">
-                        <label class="form-label">Scaffale <span class="text-danger">*</span></label>
+                        <label class="form-label" for="fScaricoCodScaffale">Scaffale <span class="text-danger">*</span></label>
                         <select class="form-select" id="fScaricoCodScaffale" disabled><option value="">— prima seleziona armadio —</option></select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Quantità <span class="text-danger">*</span></label>
+                        <label class="form-label" for="fScaricoQta">Quantità <span class="text-danger">*</span></label>
                         <input type="number" class="form-control" id="fScaricoQta" min="1" value="1">
                     </div>
                 </div>
                 <input type="hidden" id="fScaricoCodProd">
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
@@ -142,17 +151,17 @@
 </div>
 
 <!-- Modal attributi prodotto -->
-<div class="modal fade" id="modalAttrProd" tabindex="-1" aria-labelledby="titleAttrProd" aria-hidden="true">
+<div class="modal fade" id="modalAttrProd" tabindex="-1" aria-labelledby="titleAttrProd" aria-hidden="true" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="titleAttrProd"><i class="bi bi-list-check me-2"></i>Attributi — <span id="titoloAttrProd"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h2 class="modal-title" id="titleAttrProd"><i class="bi bi-list-check me-2"></i>Attributi — <span id="titoloAttrProd"></span></h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             <div class="modal-body">
                 <div id="listaAttrProd" class="mb-3">Caricamento...</div>
                 <hr>
-                <h6 class="mb-2">Assegna attributo</h6>
+                <h3 class="mb-2 fs-6">Assegna attributo</h3>
                 <div class="row g-2">
                     <div class="col-5">
                         <select class="form-select form-select-sm" id="fAssignCodAttr"><option value="">— seleziona —</option></select>
@@ -173,5 +182,5 @@
     </div>
 </div>
 
-<?php include '_footer.php'; ?>
 <script src="/js/prodotti.js"></script>
+<?php include '_footer.php'; ?>

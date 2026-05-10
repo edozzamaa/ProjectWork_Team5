@@ -25,4 +25,8 @@ interface IArmadioRepository {
     public function savePosizione(Posizione $posizione): void;
 
     public function deletePosizione(ArmadioId $codArmadio, ScaffaleId $codScaffale): void;
+
+    public function countGiacenzeArmadio(ArmadioId $codArmadio): int;
+
+    public function countGiacenzePosizione(ArmadioId $codArmadio, ScaffaleId $codScaffale): int;
 }

@@ -33,4 +33,8 @@ interface IProdottoRepository {
     public function saveAttributo(AttrProd $attrProd): void;
 
     public function deleteAttributo(ProdottoId $codProd, AttributoId $codAttr): void;
+
+    public function countByCategoria(CategoriaId $codCat): int;
+
+    public function deleteByCategoria(CategoriaId $codCat): void;
 }

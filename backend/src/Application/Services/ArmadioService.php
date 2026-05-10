@@ -77,6 +77,9 @@ class ArmadioService implements IArmadioService {
         if ($this->armadioRepository->findArmadio(new ArmadioId($input->codArmadio)) === null) {
             throw new \RuntimeException("Armadio '{$input->codArmadio}' non trovato.");
         }
+        if ($this->armadioRepository->countGiacenzeArmadio(new ArmadioId($input->codArmadio)) > 0) {
+            throw new \DomainException("Impossibile eliminare l'armadio '{$input->codArmadio}': contiene ancora prodotti. Svuotalo prima.");
+        }
         $this->armadioRepository->deleteArmadio(new ArmadioId($input->codArmadio));
     }
 
@@ -115,6 +118,9 @@ class ArmadioService implements IArmadioService {
     public function deletePosizione(DeletePosizioneInput $input): void {
         if ($this->armadioRepository->findPosizione(new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale)) === null) {
             throw new \RuntimeException("Posizione '{$input->codArmadio}/{$input->codScaffale}' non trovata.");
+        }
+        if ($this->armadioRepository->countGiacenzePosizione(new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale)) > 0) {
+            throw new \DomainException("Impossibile eliminare lo scaffale '{$input->codScaffale}': contiene ancora prodotti. Svuotalo prima.");
         }
         $this->armadioRepository->deletePosizione(new ArmadioId($input->codArmadio), new ScaffaleId($input->codScaffale));
     }

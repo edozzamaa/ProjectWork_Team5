@@ -206,4 +206,27 @@ class ArmadioRepository implements IArmadioRepository {
             throw new \RuntimeException("Impossibile eliminare la posizione '{$codArmadioStr}/{$codScaffaleStr}'.");
         }
     }
+
+    public function countGiacenzeArmadio(ArmadioId $codArmadio): int {
+        $connection = $this->databaseConnector->getConnection();
+        $stmt = $connection->prepare(
+            'SELECT COALESCE(SUM(qta), 0) AS tot FROM POS_PROD WHERE codArmadio = ?'
+        );
+        $codArmadioStr = (string) $codArmadio;
+        $stmt->bind_param('s', $codArmadioStr);
+        $stmt->execute();
+        return (int) $stmt->get_result()->fetch_assoc()['tot'];
+    }
+
+    public function countGiacenzePosizione(ArmadioId $codArmadio, ScaffaleId $codScaffale): int {
+        $connection = $this->databaseConnector->getConnection();
+        $stmt = $connection->prepare(
+            'SELECT COALESCE(SUM(qta), 0) AS tot FROM POS_PROD WHERE codArmadio = ? AND codScaffale = ?'
+        );
+        $codArmadioStr  = (string) $codArmadio;
+        $codScaffaleStr = (string) $codScaffale;
+        $stmt->bind_param('ss', $codArmadioStr, $codScaffaleStr);
+        $stmt->execute();
+        return (int) $stmt->get_result()->fetch_assoc()['tot'];
+    }
 }

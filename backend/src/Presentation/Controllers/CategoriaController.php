@@ -70,6 +70,8 @@ class CategoriaController {
         try {
             $this->service->deleteCategoria(new DeleteCategoriaInput($codCat));
             $this->response->success(['message' => 'Categoria eliminata con successo.']);
+        } catch (\DomainException $e) {
+            $this->response->error($e->getMessage(), 409);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
         }

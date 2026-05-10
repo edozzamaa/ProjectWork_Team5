@@ -72,6 +72,8 @@ class ArmadioController {
         try {
             $this->service->deleteArmadio(new DeleteArmadioInput($codArmadio));
             $this->response->success(['message' => 'Armadio eliminato con successo.']);
+        } catch (\DomainException $e) {
+            $this->response->error($e->getMessage(), 409);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
         }
@@ -127,6 +129,8 @@ class ArmadioController {
         try {
             $this->service->deletePosizione(new DeletePosizioneInput($codArmadio, $codScaffale));
             $this->response->success(['message' => 'Posizione eliminata con successo.']);
+        } catch (\DomainException $e) {
+            $this->response->error($e->getMessage(), 409);
         } catch (Exception $e) {
             $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
         }

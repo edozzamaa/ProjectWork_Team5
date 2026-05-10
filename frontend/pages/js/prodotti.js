@@ -147,9 +147,10 @@ function openCreate() {
     document.getElementById('titleProdotto').textContent = 'Nuovo prodotto';
     document.getElementById('fCodProd').value = '';
     document.getElementById('fQtaRiordino').value = '0';
-    fillSelect('fCodCat', cacheCategorie.map(c => ({ value: c.codCat, label: c.codCat })), '\u2014 nessuna \u2014');
+    fillSelect('fCodCat', cacheCategorie.map(c => ({ value: c.codCat, label: c.codCat })), '\u2014 seleziona \u2014');
     fillSelect('fCodReg', cacheCodReg.map(r => ({ value: r.codReg, label: r.codReg + (r.descrizione ? ' \u2014 ' + r.descrizione : '') })), '\u2014 nessuna \u2014');
     fillSelect('fCodOE',  cacheCodOE.map(o => ({ value: o.codOE,   label: o.codOE  + (o.descrizione ? ' \u2014 ' + o.descrizione : '') })), '\u2014 nessuna \u2014');
+    document.getElementById('fCodCatReq').classList.remove('d-none');
     document.getElementById('prodAttrContainer').innerHTML = '';
     getModal('modalProdotto').show();
 }
@@ -162,12 +163,13 @@ async function openEdit(cod) {
     document.getElementById('fCodProd').value = p.codProd;
     document.getElementById('fCodProd').disabled = true;
     document.getElementById('fQtaRiordino').value = p.qtaRiordino ?? 0;
-    fillSelect('fCodCat', cacheCategorie.map(c => ({ value: c.codCat, label: c.codCat })), '\u2014 nessuna \u2014');
+    fillSelect('fCodCat', cacheCategorie.map(c => ({ value: c.codCat, label: c.codCat })), '\u2014 seleziona \u2014');
     fillSelect('fCodReg', cacheCodReg.map(r => ({ value: r.codReg, label: r.codReg + (r.descrizione ? ' \u2014 ' + r.descrizione : '') })), '\u2014 nessuna \u2014');
     fillSelect('fCodOE',  cacheCodOE.map(o => ({ value: o.codOE,   label: o.codOE  + (o.descrizione ? ' \u2014 ' + o.descrizione : '') })), '\u2014 nessuna \u2014');
     document.getElementById('fCodCat').value = p.codCat ?? '';
     document.getElementById('fCodReg').value = p.codReg ?? '';
     document.getElementById('fCodOE').value  = p.codOE  ?? '';
+    document.getElementById('fCodCatReq').classList.remove('d-none');
     const attrEl = document.getElementById('prodAttrContainer');
     attrEl.innerHTML = '<p class="text-muted small mb-0">Caricamento attributi...</p>';
     getModal('modalProdotto').show();
@@ -177,9 +179,15 @@ async function openEdit(cod) {
 }
 
 async function submitProdotto() {
+    const codCat = document.getElementById('fCodCat').value;
+    if (!codCat) {
+        showToast('La categoria è obbligatoria', 'danger');
+        document.getElementById('fCodCat').focus();
+        return;
+    }
     const body = {
         qtaRiordino: parseInt(document.getElementById('fQtaRiordino').value) || 0,
-        codCat: document.getElementById('fCodCat').value || null,
+        codCat: codCat || null,
         codReg: document.getElementById('fCodReg').value || null,
         codOE:  document.getElementById('fCodOE').value  || null,
     };

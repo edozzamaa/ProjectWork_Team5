@@ -225,6 +225,50 @@ class ProdottoRepository implements IProdottoRepository {
         $stmt->execute();
     }
 
+    public function countByCategoria(CategoriaId $codCat): int {
+        $connection = $this->databaseConnector->getConnection();
+        $stmt = $connection->prepare('SELECT COUNT(*) AS tot FROM PRODOTTO WHERE codCat = ?');
+        $codCatStr = (string) $codCat;
+        $stmt->bind_param('s', $codCatStr);
+        $stmt->execute();
+        return (int) $stmt->get_result()->fetch_assoc()['tot'];
+    }
+
+    public function deleteByCategoria(CategoriaId $codCat): void {
+        $connection = $this->databaseConnector->getConnection();
+        $codCatStr = (string) $codCat;
+
+        $connection->begin_transaction();
+        try {
+            // elimina attributi e giacenze in cascade tramite FK ON DELETE CASCADE,
+            // ma eliminiamo esplicitamente per sicurezza
+            $stmt = $connection->prepare(
+                'DELETE ap FROM ATTR_PROD ap
+                 INNER JOIN PRODOTTO p ON p.codProd = ap.codProd
+                 WHERE p.codCat = ?'
+            );
+            $stmt->bind_param('s', $codCatStr);
+            $stmt->execute();
+
+            $stmt2 = $connection->prepare(
+                'DELETE pp FROM POS_PROD pp
+                 INNER JOIN PRODOTTO p ON p.codProd = pp.codProd
+                 WHERE p.codCat = ?'
+            );
+            $stmt2->bind_param('s', $codCatStr);
+            $stmt2->execute();
+
+            $stmt3 = $connection->prepare('DELETE FROM PRODOTTO WHERE codCat = ?');
+            $stmt3->bind_param('s', $codCatStr);
+            $stmt3->execute();
+
+            $connection->commit();
+        } catch (\Throwable $e) {
+            $connection->rollback();
+            throw new \RuntimeException("Impossibile eliminare i prodotti della categoria '{$codCatStr}'.");
+        }
+    }
+
     private function rowToModel(array $row): Prodotto {
         return Prodotto::reconstituteFromDatabase(
             new ProdottoId((int) $row['codProd']),

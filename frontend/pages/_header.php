@@ -8,14 +8,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/style/style.css" rel="stylesheet">
+    <script src="/js/utils.js"></script>
 </head>
 <body class="bg-light">
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+<header>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm" aria-label="Navigazione principale">
     <div class="container-fluid">
         <a class="navbar-brand fw-bold" href="/index.php">
             <i class="bi bi-box-seam-fill me-1"></i> Magazzino
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Apri/chiudi menu di navigazione">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navMain">
@@ -34,9 +36,10 @@
                 ];
                 foreach ($navItems as $key => $item):
                     $active = $currentPage === $key ? 'active fw-semibold' : '';
+                    $ariaCurrent = $currentPage === $key ? ' aria-current="page"' : '';
                 ?>
                 <li class="nav-item">
-                    <a class="nav-link <?= $active ?>" href="<?= $item['href'] ?>">
+                    <a class="nav-link <?= $active ?>" href="<?= $item['href'] ?>"<?= $ariaCurrent ?>>
                         <i class="bi bi-<?= $item['icon'] ?>"></i> <?= $item['label'] ?>
                     </a>
                 </li>
@@ -45,4 +48,5 @@
         </div>
     </div>
 </nav>
-<div class="container-fluid px-4 py-4">
+</header>
+<main class="container-fluid px-4 py-4">

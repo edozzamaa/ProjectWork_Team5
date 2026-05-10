@@ -139,6 +139,14 @@ class ProdottoService implements IProdottoService {
         $this->prodottoRepository->delete(new ProdottoId((int) $input->codProd));
     }
 
+    public function deleteByCategoria(GetProdottoByCategoriaInput $input): int {
+        $count = $this->prodottoRepository->countByCategoria(new CategoriaId($input->codCat));
+        if ($count > 0) {
+            $this->prodottoRepository->deleteByCategoria(new CategoriaId($input->codCat));
+        }
+        return $count;
+    }
+
     /** @return AttrProdDTO[] */
     public function getAttributi(GetAttributiDiProdottoInput $input): array {
         return array_map(fn(AttrProd $a) => $this->attrProdToDTO($a), $this->prodottoRepository->getAttributi(new ProdottoId((int) $input->codProd)));

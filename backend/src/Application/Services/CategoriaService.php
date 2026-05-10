@@ -11,13 +11,16 @@ use src\Application\DTO\Input\CreateCategoriaInput;
 use src\Application\DTO\Input\UpdateCategoriaInput;
 use src\Application\DTO\Input\DeleteCategoriaInput;
 use src\Application\Interfaces\IRepositories\ICategoriaRepository;
+use src\Application\Interfaces\IRepositories\IProdottoRepository;
 
 class CategoriaService implements ICategoriaService {
 
     private ICategoriaRepository $categoriaRepository;
+    private IProdottoRepository $prodottoRepository;
 
-    public function __construct(ICategoriaRepository $categoriaRepository) {
+    public function __construct(ICategoriaRepository $categoriaRepository, IProdottoRepository $prodottoRepository) {
         $this->categoriaRepository = $categoriaRepository;
+        $this->prodottoRepository  = $prodottoRepository;
     }
 
     private function toDTO(Categoria $categoria): CategoriaDTO {
@@ -57,6 +60,9 @@ class CategoriaService implements ICategoriaService {
     public function deleteCategoria(DeleteCategoriaInput $input): void {
         if ($this->categoriaRepository->findByCod(new CategoriaId($input->codCat)) === null) {
             throw new \RuntimeException("Categoria '{$input->codCat}' non trovata.");
+        }
+        if ($this->prodottoRepository->countByCategoria(new CategoriaId($input->codCat)) > 0) {
+            throw new \DomainException("Impossibile eliminare la categoria '{$input->codCat}': esistono prodotti associati. Eliminali prima.");
         }
         $this->categoriaRepository->delete(new CategoriaId($input->codCat));
     }

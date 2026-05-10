@@ -101,6 +101,15 @@ class ProdottoController {
         }
     }
 
+    public function deleteByCategoria(string $codCat): void {
+        try {
+            $deleted = $this->service->deleteByCategoria(new GetProdottoByCategoriaInput($codCat));
+            $this->response->success(['message' => "Eliminati {$deleted} prodotti della categoria '{$codCat}'.", 'deleted' => $deleted]);
+        } catch (Exception $e) {
+            $this->response->error('Operazione non disponibile al momento. Riprova.', 500);
+        }
+    }
+
     public function getAttributi(string $codProd): void {
         try {
             $attributi = $this->service->getAttributi(new GetAttributiDiProdottoInput($codProd));
