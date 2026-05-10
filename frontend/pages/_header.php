@@ -11,6 +11,7 @@
     <script src="/js/utils.js"></script>
 </head>
 <body class="bg-light">
+<a class="skip-link" href="#mainContent">Vai al contenuto principale</a>
 <header>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm" aria-label="Navigazione principale">
     <div class="container-fluid">
@@ -49,4 +50,4 @@
     </div>
 </nav>
 </header>
-<main class="container-fluid px-4 py-4">
+<main id="mainContent" class="container-fluid px-4 py-4">

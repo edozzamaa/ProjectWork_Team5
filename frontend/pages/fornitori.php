@@ -41,11 +41,11 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="fTelefono">Telefono</label>
-                    <input type="tel" class="form-control" id="fTelefono" maxlength="20">
+                    <input type="tel" class="form-control" id="fTelefono" maxlength="20" autocomplete="tel">
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="fEmail">Email</label>
-                    <input type="email" class="form-control" id="fEmail" maxlength="100">
+                    <input type="email" class="form-control" id="fEmail" maxlength="100" autocomplete="email">
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="fIndirizzo">Indirizzo</label>

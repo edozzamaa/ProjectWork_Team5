@@ -41,20 +41,6 @@ services:
     networks:
       - frontend
 
-
-  # Non eseguire per il deployment, solo in fase di test.
-  phpmyadmin:
-    image: phpmyadmin:5.2.3-apache
-    ports:
-      - 8080:80
-    environment:
-      - PMA_HOST=db
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - db
-
 volumes:
   dbdata:
   backend_vendor:

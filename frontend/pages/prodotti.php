@@ -40,7 +40,7 @@
                 <input type="hidden" id="fCodProd">
                 <div class="mb-3">
                     <label class="form-label" for="fQtaRiordino">Soglia riordino</label>
-                    <input type="number" class="form-control" id="fQtaRiordino" min="0" value="0">
+                    <input type="number" class="form-control" id="fQtaRiordino" min="0" value="0" inputmode="numeric">
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="fCodCat">Categoria <span class="text-danger" id="fCodCatReq">*</span></label>
@@ -91,7 +91,7 @@
                     </div>
                     <div class="col-md-2">
                         <label class="form-label" for="fCaricoQta">Quantità <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="fCaricoQta" min="1" value="1">
+                        <input type="number" class="form-control" id="fCaricoQta" min="1" value="1" inputmode="numeric">
                     </div>
                 </div>
                 <hr>
@@ -134,7 +134,7 @@
                     </div>
                     <div class="col-md-2">
                         <label class="form-label" for="fScaricoQta">Quantità <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="fScaricoQta" min="1" value="1">
+                        <input type="number" class="form-control" id="fScaricoQta" min="1" value="1" inputmode="numeric">
                     </div>
                 </div>
                 <input type="hidden" id="fScaricoCodProd">
