@@ -3,3 +3,5 @@
 # Robaccia Mac
 .DS_store
 .metals
+
+node_modules
