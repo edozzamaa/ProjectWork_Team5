@@ -177,4 +177,10 @@ async function deletePosizione(codArmadio, codScaffale) {
     });
 }
 
+document.getElementById('btnNuovoArmadio').addEventListener('click', openCreateArmadio);
+document.getElementById('formArmadio').addEventListener('submit', e => { e.preventDefault(); submitArmadio(); });
+document.getElementById('btnSalvaArmadio').addEventListener('click', submitArmadio);
+document.getElementById('formPosizione').addEventListener('submit', e => { e.preventDefault(); submitPosizione(); });
+document.getElementById('btnSalvaPosizione').addEventListener('click', submitPosizione);
+
 loadArmadi();

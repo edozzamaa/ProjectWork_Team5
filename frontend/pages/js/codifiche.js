@@ -11,9 +11,9 @@ async function loadReg() {
         }
         tbody.innerHTML = regList.map(r => `
             <tr>
-                <td><code>${escHtml(r.codReg)}</code></td>
-                <td>${escHtml(r.descrizione)}</td>
-                <td class="text-end">
+                <td headers="thRegCod"><code>${escHtml(r.codReg)}</code></td>
+                <td headers="thRegDesc">${escHtml(r.descrizione)}</td>
+                <td class="text-end" headers="thRegAzioni">
                     <button class="btn btn-sm btn-outline-secondary me-1" onclick="openEditReg(${escHtml(JSON.stringify(r.codReg))})" aria-label="Modifica codifica ${escHtml(r.codReg)}"><i class="bi bi-pencil"></i></button>
                     <button class="btn btn-sm btn-outline-danger" onclick="deleteReg(${escHtml(JSON.stringify(r.codReg))})" aria-label="Elimina codifica ${escHtml(r.codReg)}"><i class="bi bi-trash"></i></button>
                 </td>
@@ -31,10 +31,10 @@ async function loadOE() {
         }
         tbody.innerHTML = oeList.map(o => `
             <tr>
-                <td><code>${escHtml(o.codOE)}</code></td>
-                <td>${escHtml(o.descrizione)}</td>
-                <td>${escHtml(o.ragSoc ?? '—')}</td>
-                <td class="text-end">
+                <td headers="thOECod"><code>${escHtml(o.codOE)}</code></td>
+                <td headers="thOEDesc">${escHtml(o.descrizione)}</td>
+                <td headers="thOEFor">${escHtml(o.ragSoc ?? '—')}</td>
+                <td class="text-end" headers="thOEAzioni">
                     <button class="btn btn-sm btn-outline-secondary me-1" onclick="openEditOE(${escHtml(JSON.stringify(o.codOE))})" aria-label="Modifica codifica OE ${escHtml(o.codOE)}"><i class="bi bi-pencil"></i></button>
                     <button class="btn btn-sm btn-outline-danger" onclick="deleteOE(${escHtml(JSON.stringify(o.codOE))})" aria-label="Elimina codifica OE ${escHtml(o.codOE)}"><i class="bi bi-trash"></i></button>
                 </td>
@@ -121,5 +121,12 @@ async function deleteOE(cod) {
         catch(e) { showToast(e.message, 'danger'); }
     });
 }
+
+document.getElementById('btnNuovaReg').addEventListener('click', openCreateReg);
+document.getElementById('btnNuovaOE').addEventListener('click', openCreateOE);
+document.getElementById('formReg').addEventListener('submit', e => { e.preventDefault(); submitReg(); });
+document.getElementById('btnSalvaReg').addEventListener('click', submitReg);
+document.getElementById('formOE').addEventListener('submit', e => { e.preventDefault(); submitOE(); });
+document.getElementById('btnSalvaOE').addEventListener('click', submitOE);
 
 loadReg(); loadOE();

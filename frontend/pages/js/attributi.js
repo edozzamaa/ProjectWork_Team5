@@ -11,9 +11,9 @@ async function loadAttributi() {
         }
         tbody.innerHTML = attributi.map(a => `
             <tr>
-                <td><code>${escHtml(a.codAttr)}</code></td>
-                <td>${escHtml(a.nome)}</td>
-                <td class="text-end">
+                <td headers="thAttrCod"><code>${escHtml(a.codAttr)}</code></td>
+                <td headers="thAttrNome">${escHtml(a.nome)}</td>
+                <td class="text-end" headers="thAttrAzioni">
                     <button class="btn btn-sm btn-outline-secondary me-1" onclick="openEdit(${escHtml(JSON.stringify(a.codAttr))})" aria-label="Modifica attributo ${escHtml(a.codAttr)}"><i class="bi bi-pencil"></i></button>
                     <button class="btn btn-sm btn-outline-danger" onclick="deleteAttr(${escHtml(JSON.stringify(a.codAttr))})" aria-label="Elimina attributo ${escHtml(a.codAttr)}"><i class="bi bi-trash"></i></button>
                 </td>
@@ -67,5 +67,9 @@ async function deleteAttr(cod) {
         } catch(e) { showToast(e.message, 'danger'); }
     });
 }
+
+document.getElementById('btnNuovoAttributo').addEventListener('click', openCreate);
+document.getElementById('formAttributo').addEventListener('submit', e => { e.preventDefault(); submitForm(); });
+document.getElementById('btnSalvaAttributo').addEventListener('click', submitForm);
 
 loadAttributi();

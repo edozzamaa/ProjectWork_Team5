@@ -11,9 +11,9 @@ async function loadCategorie() {
         }
         tbody.innerHTML = categorie.map(c => `
             <tr>
-                <td><code>${escHtml(c.codCat)}</code></td>
-                <td>${escHtml(c.tipo)}</td>
-                <td class="text-end">
+                <td headers="thCatCod"><code>${escHtml(c.codCat)}</code></td>
+                <td headers="thCatTipo">${escHtml(c.tipo)}</td>
+                <td class="text-end" headers="thCatAzioni">
                     <button class="btn btn-sm btn-outline-secondary me-1" onclick="openEdit(${escHtml(JSON.stringify(c.codCat))})" aria-label="Modifica categoria ${escHtml(c.codCat)}"><i class="bi bi-pencil"></i></button>
                     <button class="btn btn-sm btn-outline-danger" onclick="deleteCat(${escHtml(JSON.stringify(c.codCat))})" aria-label="Elimina categoria ${escHtml(c.codCat)}"><i class="bi bi-trash"></i></button>
                 </td>
@@ -111,5 +111,10 @@ async function confermaElimina() {
         btn.innerHTML = '<i class="bi bi-trash me-1"></i>Elimina';
     }
 }
+
+document.getElementById('btnNuovaCategoria').addEventListener('click', openCreate);
+document.getElementById('formCategoria').addEventListener('submit', e => { e.preventDefault(); submitForm(); });
+document.getElementById('btnSalvaCategoria').addEventListener('click', submitForm);
+document.getElementById('btnConfermaElimina').addEventListener('click', confermaElimina);
 
 loadCategorie();

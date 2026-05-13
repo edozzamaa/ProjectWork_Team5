@@ -39,18 +39,23 @@ async function init() {
     popolaDropdown();
     await renderFiltriSalvati();
 
-    // modal salva filtro: reset input all'apertura + invio con Enter
-    const modalEl = document.getElementById('modalSalvaFiltro');
-    if (modalEl) {
-        modalEl.addEventListener('show.bs.modal', () => {
-            const inp = document.getElementById('nomeFiltroInput');
-            inp.value = '';
-            inp.classList.remove('is-invalid');
-        });
-        document.getElementById('nomeFiltroInput').addEventListener('keydown', e => {
-            if (e.key === 'Enter') salvaFiltroCorrente();
-        });
-    }
+    document.getElementById('nomeFiltroInput')?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') salvaFiltroCorrente();
+    });
+
+    document.getElementById('formRicerca').addEventListener('submit', e => { e.preventDefault(); eseguiRicerca(); });
+    document.getElementById('btnAddAttrFiltro').addEventListener('click', addAttrFiltroRow);
+    document.getElementById('btnOpenSalvaFiltro').addEventListener('click', openSalvaFiltroDialog);
+    document.getElementById('btnResetFiltri').addEventListener('click', resetFiltri);
+    document.getElementById('btnSalvaFiltro').addEventListener('click', salvaFiltroCorrente);
+}
+
+/* ---------- apri dialog salva filtro -------------------------------- */
+function openSalvaFiltroDialog() {
+    const inp = document.getElementById('nomeFiltroInput');
+    inp.value = '';
+    inp.classList.remove('is-invalid');
+    getModal('modalSalvaFiltro').show();
 }
 
 /* ---------- popola dropdown filtri base ----------------------------- */
@@ -213,10 +218,10 @@ function renderRisultati() {
         const oeEntry  = cacheCodOE.find(o => o.codOE   === p.codOE);
 
         const regCell = p.codReg
-            ? `<span class="fw-bold">${escHtml(regEntry?.descrizione ?? p.codReg)}</span><br><small class="text-muted">${escHtml(p.codReg)}</small>`
+            ? `<span class="fw-bold">${escHtml(regEntry?.descrizione ?? p.codReg)}</span><br><span class="small text-muted">${escHtml(p.codReg)}</span>`
             : '<span class="text-muted">—</span>';
         const oeCell = p.codOE
-            ? `<span class="fw-bold">${escHtml(oeEntry?.descrizione ?? p.codOE)}</span><br><small class="text-muted">${escHtml(p.codOE)}</small>`
+            ? `<span class="fw-bold">${escHtml(oeEntry?.descrizione ?? p.codOE)}</span><br><span class="small text-muted">${escHtml(p.codOE)}</span>`
             : '<span class="text-muted">—</span>';
 
         const attrBadges = (p.attributi ?? []).length === 0
@@ -227,13 +232,13 @@ function renderRisultati() {
             }).join('');
 
         return `<tr>
-            <td><span class="fw-bold">${escHtml(p.codProd)}</span></td>
-            <td>${badge}</td>
-            <td>${escHtml(String(p.qtaRiordino))}</td>
-            <td>${escHtml(p.codCat ?? '-')}</td>
-            <td class="small">${regCell}</td>
-            <td class="small">${oeCell}</td>
-            <td class="small">${attrBadges}</td>
+            <td headers="thRicCod"><span class="fw-bold">${escHtml(p.codProd)}</span></td>
+            <td headers="thRicGiac">${badge}</td>
+            <td headers="thRicSoglia">${escHtml(String(p.qtaRiordino))}</td>
+            <td headers="thRicCat">${escHtml(p.codCat ?? '-')}</td>
+            <td class="small" headers="thRicReg">${regCell}</td>
+            <td class="small" headers="thRicOE">${oeCell}</td>
+            <td class="small" headers="thRicAttr">${attrBadges}</td>
         </tr>`;
     }).join('');
 }
@@ -366,7 +371,7 @@ async function salvaFiltroCorrente() {
     inp.classList.remove('is-invalid');
     await apiCall('/filtri', 'POST', { nome, stato: leggiStatoFiltri() });
     await renderFiltriSalvati();
-    bootstrap.Modal.getInstance(document.getElementById('modalSalvaFiltro')).hide();
+    getModal('modalSalvaFiltro').hide();
 }
 
 function caricaFiltroSalvato(id) {

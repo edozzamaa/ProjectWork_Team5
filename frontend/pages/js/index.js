@@ -19,12 +19,12 @@ async function loadDashboard() {
         }
         tbody.innerHTML = soglia.map(p => `
             <tr>
-                <td><span class="fw-bold">${escHtml(p.codProd)}</span></td>
-                <td>${escHtml(String(p.qtaRiordino))}</td>
-                <td><span class="badge text-bg-danger">${escHtml(String(p.qtaTotale ?? '—'))}</span></td>
-                <td>${escHtml(p.codCat ?? '—')}</td>
-                <td>${escHtml(p.codReg ?? '—')}</td>
-                <td>${escHtml(p.codOE ?? '—')}</td>
+                <td headers="thIdxCod"><span class="fw-bold">${escHtml(p.codProd)}</span></td>
+                <td headers="thIdxSoglia">${escHtml(String(p.qtaRiordino))}</td>
+                <td headers="thIdxGiac"><span class="badge text-bg-danger">${escHtml(String(p.qtaTotale ?? '—'))}</span></td>
+                <td headers="thIdxCat">${escHtml(p.codCat ?? '—')}</td>
+                <td headers="thIdxReg">${escHtml(p.codReg ?? '—')}</td>
+                <td headers="thIdxOE">${escHtml(p.codOE ?? '—')}</td>
             </tr>
         `).join('');
     } catch(e) {

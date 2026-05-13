@@ -11,12 +11,12 @@ async function loadFornitori() {
         }
         tbody.innerHTML = fornitori.map(f => `
             <tr>
-                <td><span class="fw-bold">${escHtml(f.ragSoc)}</span></td>
-                <td>${escHtml(f.partIVA ?? '—')}</td>
-                <td>${escHtml(f.telefono ?? '—')}</td>
-                <td>${escHtml(f.email ?? '—')}</td>
-                <td>${escHtml(f.indirizzo ?? '—')}</td>
-                <td class="text-end">
+                <td headers="thForRagSoc"><span class="fw-bold">${escHtml(f.ragSoc)}</span></td>
+                <td headers="thForPIVA">${escHtml(f.partIVA ?? '—')}</td>
+                <td headers="thForTel">${escHtml(f.telefono ?? '—')}</td>
+                <td headers="thForEmail">${escHtml(f.email ?? '—')}</td>
+                <td headers="thForInd">${escHtml(f.indirizzo ?? '—')}</td>
+                <td class="text-end" headers="thForAzioni">
                     <button class="btn btn-sm btn-outline-secondary me-1" onclick="openEdit(${escHtml(JSON.stringify(f.ragSoc))})" aria-label="Modifica ${escHtml(f.ragSoc)}"><i class="bi bi-pencil"></i></button>
                     <button class="btn btn-sm btn-outline-danger" onclick="deleteFor(${escHtml(JSON.stringify(f.ragSoc))})" aria-label="Elimina ${escHtml(f.ragSoc)}"><i class="bi bi-trash"></i></button>
                 </td>
@@ -78,5 +78,9 @@ async function deleteFor(ragSoc) {
         } catch(e) { showToast(e.message, 'danger'); }
     });
 }
+
+document.getElementById('btnNuovoFornitore').addEventListener('click', openCreate);
+document.getElementById('formFornitore').addEventListener('submit', e => { e.preventDefault(); submitForm(); });
+document.getElementById('btnSalvaFornitore').addEventListener('click', submitForm);
 
 loadFornitori();

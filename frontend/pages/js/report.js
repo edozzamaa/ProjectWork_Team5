@@ -29,11 +29,11 @@ async function loadReport() {
                 const pr = prodMap[p.codProd];
                 const desc = pr ? (regMap[pr.codReg] ?? pr.codReg ?? '—') : '—';
                 return `<tr>
-                    <td><span class="fw-bold">${escHtml(p.codProd)}</span></td>
-                    <td class="small">${escHtml(desc)}</td>
-                    <td>${escHtml(String(p.qtaRiordino))}</td>
-                    <td><span class="badge text-bg-danger">${escHtml(String(p.qtaTotale ?? p.giacenzaTotale ?? 0))}</span></td>
-                    <td>${escHtml(pr?.codCat ?? '—')}</td>
+                    <td headers="thRptSogCod"><span class="fw-bold">${escHtml(p.codProd)}</span></td>
+                    <td class="small" headers="thRptSogDesc">${escHtml(desc)}</td>
+                    <td headers="thRptSogSoglia">${escHtml(String(p.qtaRiordino))}</td>
+                    <td headers="thRptSogGiac"><span class="badge text-bg-danger">${escHtml(String(p.qtaTotale ?? p.giacenzaTotale ?? 0))}</span></td>
+                    <td headers="thRptSogCat">${escHtml(pr?.codCat ?? '—')}</td>
                 </tr>`;
             }).join('');
     } else ts.innerHTML = '<tr><td colspan="5" class="text-danger text-center py-2">Errore caricamento</td></tr>';
@@ -82,9 +82,9 @@ async function loadReport() {
         tg.innerHTML = posizioni.length === 0
             ? '<tr><td colspan="3" class="text-center text-muted py-2"><i class="bi bi-info-circle me-1"></i>Nessun prodotto ancora posizionato in magazzino</td></tr>'
             : posizioni.map(g => `<tr>
-                    <td>${escHtml(g.codArmadio)}</td>
-                    <td>${escHtml(g.codScaffale)}</td>
-                    <td>${escHtml(String(g.qta))}</td>
+                    <td headers="thRptGiacArm">${escHtml(g.codArmadio)}</td>
+                    <td headers="thRptGiacSca">${escHtml(g.codScaffale)}</td>
+                    <td headers="thRptGiacQta">${escHtml(String(g.qta))}</td>
                 </tr>`).join('');
     } else tg.innerHTML = '<tr><td colspan="3" class="text-danger text-center py-2">Errore caricamento</td></tr>';
 
@@ -100,15 +100,15 @@ async function loadReport() {
                 const regDesc = regMap[p.codReg] ?? p.codReg ?? '—';
                 const oeDesc  = oeMap[p.codOE]  ?? p.codOE  ?? '—';
                 return `<tr>
-                    <td><span class="fw-bold">${escHtml(p.codProd)}</span></td>
-                    <td class="small">
+                    <td headers="thRptCmpCod"><span class="fw-bold">${escHtml(p.codProd)}</span></td>
+                    <td class="small" headers="thRptCmpDesc">
                         <span>${escHtml(regDesc)}</span><br>
-                        <small class="text-muted">${escHtml(oeDesc)}</small>
+                        <span class="small text-muted">${escHtml(oeDesc)}</span>
                     </td>
-                    <td>${escHtml(String(p.giacenzaTotale ?? 0))}</td>
-                    <td>${escHtml(String(p.qtaRiordino))}</td>
-                    <td>${p.sottoSoglia ? '<span class="badge text-bg-danger">Sì</span>' : '<span class="badge text-bg-success">No</span>'}</td>
-                    <td>${escHtml(p.codCat ?? '—')}</td>
+                    <td headers="thRptCmpGiac">${escHtml(String(p.giacenzaTotale ?? 0))}</td>
+                    <td headers="thRptCmpSoglia">${escHtml(String(p.qtaRiordino))}</td>
+                    <td headers="thRptCmpSotto">${p.sottoSoglia ? '<span class="badge text-bg-danger">Sì</span>' : '<span class="badge text-bg-success">No</span>'}</td>
+                    <td headers="thRptCmpCat">${escHtml(p.codCat ?? '—')}</td>
                 </tr>`;
             }).join('');
     } else tc.innerHTML = '<tr><td colspan="6" class="text-danger text-center py-2">Errore caricamento</td></tr>';
@@ -328,5 +328,11 @@ async function exportExcel() {
         btn.innerHTML = '<i class="bi bi-file-earmark-excel me-1"></i>Excel';
     }
 }
+
+document.getElementById('btnCsvSoglia').addEventListener('click', csvSoglia);
+document.getElementById('btnExcelSoglia').addEventListener('click', exportExcelSoglia);
+document.getElementById('btnExcelGiacenze').addEventListener('click', exportExcelGiacenze);
+document.getElementById('btnCsvCompleto').addEventListener('click', csvCompleto);
+document.getElementById('btnExcelCompleto').addEventListener('click', exportExcel);
 
 loadReport();

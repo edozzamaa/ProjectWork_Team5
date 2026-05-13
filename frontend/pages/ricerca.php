@@ -21,7 +21,7 @@
     <header class="card-header fw-semibold" id="titoloFiltri">
         <i class="bi bi-funnel me-2"></i>Filtri
     </header>
-    <form class="card-body" role="search" aria-label="Filtri ricerca prodotti" onsubmit="eseguiRicerca(); return false;">
+    <form id="formRicerca" class="card-body" role="search" aria-label="Filtri ricerca prodotti">
         <!-- Filtri base -->
         <div class="row g-3 mb-3">
             <div class="col-sm-6 col-lg-3">
@@ -54,20 +54,20 @@
         <div class="mb-3">
             <label class="form-label small fw-semibold">Filtri per attributo</label>
             <div id="filtriAttrContainer"></div>
-            <button class="btn btn-sm btn-outline-secondary mt-1" onclick="addAttrFiltroRow()">
+            <button class="btn btn-sm btn-outline-secondary mt-1" id="btnAddAttrFiltro">
                 <i class="bi bi-plus-lg me-1"></i>Aggiungi filtro attributo
             </button>
         </div>
 
         <!-- Azioni -->
         <div class="d-flex gap-2 justify-content-end">
-            <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalSalvaFiltro">
-                <i class="bi bi-bookmark-plus me-1"></i>Salva filtro
+            <button class="btn btn-outline-warning btn-sm" id="btnOpenSalvaFiltro">
+                <i class="bi bi-bookmark-plus me-1" aria-hidden="true"></i>Salva filtro
             </button>
             <button class="btn btn-primary btn-sm" type="submit">
                 <i class="bi bi-search me-1"></i>Cerca
             </button>
-            <button class="btn btn-outline-secondary btn-sm" onclick="resetFiltri()">
+            <button class="btn btn-outline-secondary btn-sm" id="btnResetFiltri">
                 <i class="bi bi-x-circle me-1"></i>Reset
             </button>
         </div>
@@ -77,7 +77,7 @@
 <!-- Risultati -->
 <section class="card shadow-sm" aria-labelledby="lblRisultati">
     <header class="card-header fw-semibold d-flex justify-content-between align-items-center">
-        <span id="lblRisultati"><i class="bi bi-table me-2"></i>Risultati</span>
+        <span id="lblRisultati"><i class="bi bi-table me-2" aria-hidden="true"></i>Risultati</span>
     </header>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -85,18 +85,18 @@
                 <caption class="visually-hidden">Risultati ricerca prodotti</caption>
                 <thead>
                     <tr>
-                        <th scope="col">Codice</th>
-                        <th scope="col">Giacenza</th>
-                        <th scope="col">Soglia</th>
-                        <th scope="col">Categoria</th>
-                        <th scope="col">Codifica Regionale</th>
-                        <th scope="col">Codifica OE</th>
-                        <th scope="col">Attributi</th>
+                        <th scope="col" id="thRicCod">Codice</th>
+                        <th scope="col" id="thRicGiac">Giacenza</th>
+                        <th scope="col" id="thRicSoglia">Soglia</th>
+                        <th scope="col" id="thRicCat">Categoria</th>
+                        <th scope="col" id="thRicReg">Codifica Regionale</th>
+                        <th scope="col" id="thRicOE">Codifica OE</th>
+                        <th scope="col" id="thRicAttr">Attributi</th>
                     </tr>
                 </thead>
-                <tbody id="tbodyRicerca">
+                <tbody id="tbodyRicerca" aria-live="polite">
                     <tr><td colspan="7" class="text-center text-muted py-4">
-                        <i class="bi bi-search me-1"></i>Imposta i filtri e premi <span class="fw-bold">Cerca</span>
+                        <i class="bi bi-search me-1" aria-hidden="true"></i>Imposta i filtri e premi <span class="fw-bold">Cerca</span>
                     </td></tr>
                 </tbody>
             </table>
@@ -106,25 +106,25 @@
 </section>
 
 <!-- Modal salva filtro -->
-<div class="modal fade" id="modalSalvaFiltro" tabindex="-1" aria-labelledby="modalSalvaFiltroLabel" aria-hidden="true" role="dialog">
+<div class="modal fade" id="modalSalvaFiltro" tabindex="-1" aria-labelledby="modalSalvaFiltroLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modalSalvaFiltroLabel"><i class="bi bi-bookmark-plus me-2"></i>Salva filtro</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
-            </div>
-            <div class="modal-body">
-                <label class="form-label small fw-semibold" for="nomeFiltroInput">Nome del filtro</label>
-                <input type="text" class="form-control form-control-sm" id="nomeFiltroInput"
-                    placeholder="es. Sotto soglia cat. A" maxlength="60" autocomplete="off">
-                <div class="invalid-feedback">Inserisci un nome.</div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annulla</button>
-                <button type="button" class="btn btn-primary btn-sm" onclick="salvaFiltroCorrente()">
-                    <i class="bi bi-bookmark-check me-1"></i>Salva
-                </button>
-            </div>
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalSalvaFiltroLabel"><i class="bi bi-bookmark-plus me-2" aria-hidden="true"></i>Salva filtro</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body">
+            <label class="form-label small fw-semibold" for="nomeFiltroInput">Nome del filtro</label>
+            <input type="text" class="form-control form-control-sm" id="nomeFiltroInput"
+                placeholder="es. Sotto soglia cat. A" maxlength="60" autocomplete="off">
+            <div class="invalid-feedback">Inserisci un nome.</div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annulla</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btnSalvaFiltro">
+                <i class="bi bi-bookmark-check me-1" aria-hidden="true"></i>Salva
+            </button>
+        </div>
         </div>
     </div>
 </div>

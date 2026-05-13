@@ -56,25 +56,25 @@ async function loadProdotti() {
             const regEntry = cacheCodReg?.find(r => r.codReg === p.codReg);
             const oeEntry  = cacheCodOE?.find(o => o.codOE  === p.codOE);
             const regCell = p.codReg
-                ? `<span class="fw-bold">${escHtml(regEntry?.descrizione ?? p.codReg)}</span><br><small class="text-muted">${escHtml(p.codReg)}</small>`
+                ? `<span class="fw-bold">${escHtml(regEntry?.descrizione ?? p.codReg)}</span><br><span class="small text-muted">${escHtml(p.codReg)}</span>`
                 : '<span class="text-muted">—</span>';
             const oeCell = p.codOE
-                ? `<span class="fw-bold">${escHtml(oeEntry?.descrizione ?? p.codOE)}</span><br><small class="text-muted">${escHtml(p.codOE)}</small>`
+                ? `<span class="fw-bold">${escHtml(oeEntry?.descrizione ?? p.codOE)}</span><br><span class="small text-muted">${escHtml(p.codOE)}</span>`
                 : '<span class="text-muted">—</span>';
             const rowId = 'attrRow_' + escHtml(p.codProd);
             return `
                 <tr>
-                    <td class="text-center">
+                    <td class="text-center" headers="thProdToggle">
                         <button class="btn btn-sm btn-link p-0 text-muted" id="btn_${escHtml(p.codProd)}" onclick="toggleAttrRow(${escHtml(JSON.stringify(p.codProd))})" aria-label="Mostra attributi ${escHtml(p.codProd)}" title="Attributi"><i class="bi bi-chevron-right"></i></button>
                     </td>
-                    <td><span class="fw-bold">${escHtml(p.codProd)}</span></td>
-                    <td>${badge}</td>
-                    <td>${escHtml(String(p.qtaRiordino))}</td>
-                    <td class="small">${posBadges}</td>
-                    <td>${escHtml(p.codCat ?? '—')}</td>
-                    <td class="small">${regCell}</td>
-                    <td class="small">${oeCell}</td>
-                    <td class="text-end text-nowrap">
+                    <td headers="thProdCod"><span class="fw-bold">${escHtml(p.codProd)}</span></td>
+                    <td headers="thProdGiac">${badge}</td>
+                    <td headers="thProdSoglia">${escHtml(String(p.qtaRiordino))}</td>
+                    <td class="small" headers="thProdPos">${posBadges}</td>
+                    <td headers="thProdCat">${escHtml(p.codCat ?? '—')}</td>
+                    <td class="small" headers="thProdReg">${regCell}</td>
+                    <td class="small" headers="thProdOE">${oeCell}</td>
+                    <td class="text-end text-nowrap" headers="thProdAzioni">
                         <button class="btn btn-sm btn-outline-success me-1" aria-label="Carico ${escHtml(p.codProd)}" onclick="openCarico(${escHtml(JSON.stringify(p.codProd))})"><i class="bi bi-arrow-down-circle"></i></button>
                         <button class="btn btn-sm btn-outline-warning me-1" aria-label="Scarico ${escHtml(p.codProd)}" onclick="openScarico(${escHtml(JSON.stringify(p.codProd))})"><i class="bi bi-arrow-up-circle"></i></button>
                         <button class="btn btn-sm btn-outline-info me-1" aria-label="Attributi ${escHtml(p.codProd)}" onclick="openAttrProd(${escHtml(JSON.stringify(p.codProd))})"><i class="bi bi-list-check"></i></button>
@@ -83,7 +83,7 @@ async function loadProdotti() {
                     </td>
                 </tr>
                 <tr id="${rowId}" class="d-none bg-light">
-                    <td></td>
+                    <td headers="thProdToggle"></td>
                     <td colspan="8" class="py-2 px-3" id="attrContent_${escHtml(p.codProd)}"><span class="text-muted small">...</span></td>
                 </tr>`;
         }).join('');
@@ -395,6 +395,17 @@ document.getElementById('fScaricoCodArmadio').addEventListener('change', functio
     fillSelect('fScaricoCodScaffale', scaffali.map(s => ({ value: s.codScaffale, label: s.codScaffale + ' (' + s.qta + ' pz)' })), '— seleziona scaffale —');
     selScaf.disabled = scaffali.length === 0;
 });
+
+document.getElementById('btnNuovoProdotto').addEventListener('click', openCreate);
+document.getElementById('formProdotto').addEventListener('submit', e => { e.preventDefault(); submitProdotto(); });
+document.getElementById('btnAddProdAttr').addEventListener('click', () => addProdAttrRow());
+document.getElementById('btnSalvaProdotto').addEventListener('click', submitProdotto);
+document.getElementById('formCarico').addEventListener('submit', e => { e.preventDefault(); submitCarico(); });
+document.getElementById('btnAddAttrCarico').addEventListener('click', () => addAttrRow());
+document.getElementById('btnSalvaCarico').addEventListener('click', submitCarico);
+document.getElementById('formScarico').addEventListener('submit', e => { e.preventDefault(); submitScarico(); });
+document.getElementById('btnSalvaScarico').addEventListener('click', submitScarico);
+document.getElementById('btnAssignAttr').addEventListener('click', assignAttr);
 
 loadSelectData();
 loadProdotti();
